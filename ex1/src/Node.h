@@ -20,8 +20,12 @@ class Node {
 	};
 
 public:
-	Node(Node::Type type);
+	Node(Node::Type type, int id);
 	virtual ~Node();
+
+	int getId() const {
+		return id;
+	}
 
 	Node::Type getType() const {
 		return type;
@@ -29,6 +33,7 @@ public:
 
 private:
 	Node::Type type;
+	int id;
 };
 
 } /* namespace tcbvrp */

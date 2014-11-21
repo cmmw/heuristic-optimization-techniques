@@ -9,7 +9,7 @@
 
 namespace tcbvrp {
 
-Node::Node(Node::Type type) : type(type) {
+Node::Node(Node::Type type) : type(type), id(id) {
 
 }
 
