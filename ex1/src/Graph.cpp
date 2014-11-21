@@ -13,7 +13,7 @@
 
 namespace tcbvrp {
 
-Graph::Graph() {
+Graph::Graph() : globalTimeLimit(-1), numberOfVehicles(-1), zeroNode(0) {
 
 }
 
@@ -37,10 +37,6 @@ void Graph::addNode(Node* node) {
 	}
 }
 
-void Graph::setAdjacencyMatrix(std::vector< std::vector<int> > adjacencyMatrix) {
-
-}
-
 int Graph::getNumberOfNodes() {
 	return nodes.size();
 }
@@ -48,7 +44,7 @@ int Graph::getNumberOfNodes() {
 /**
  * Reads given textfile and creates Graph objects as specified in the file.
  */
-static Graph createGraph(std::string filename) {
+Graph Graph::createGraph(std::string filename) {
 
 	std::ifstream input(filename.c_str());
 	std::string line;
@@ -58,6 +54,8 @@ static Graph createGraph(std::string filename) {
 	std::vector< std::vector<int> > adjacencyMatrix;
 
 	int numNodes = -1;
+	int count = -1;
+	int count2 = -1;
 	int numVehicles = -1;
 	int globalTimeLimit = -1;
 
@@ -76,14 +74,20 @@ static Graph createGraph(std::string filename) {
 
 			if (numNodes == -1) {
 				converter >> numNodes;
-			}
-			else if (numVehicles == -1) {
-				converter >> numVehicles;
+				count = numNodes;
+				count2 = numNodes+1;
 			}
 			else if (globalTimeLimit == -1) {
 				converter >> globalTimeLimit;
+				graph.setGlobalTimeLimit(globalTimeLimit);
+
 			}
-			else if (numNodes-1 > 0) {
+			else if (numVehicles == -1) {
+				converter >> numVehicles;
+				graph.setNumberOfVehicles(numVehicles);
+
+			}
+			else if (count > 0) {
 				char type;
 				int id;
 				Node *node;
@@ -105,33 +109,136 @@ static Graph createGraph(std::string filename) {
 				graph.addNode(node);
 
 				// Count down all Nodes that are read
-				numNodes--;
+				count--;
 			}
-			else if (numNodes == 0) {
+			else if (count == 0 && count2 > 0) {
 
 				int weight;
-				for (int i=0; i<numNodes; i++) {
-					std::vector<int> row;
+				std::vector<int> row;
 
-					for (int j=0; j<numNodes; j++) {
+				for (int i=0; i<numNodes+1; i++) {
 
-						converter >> weight;
-						row.push_back(weight);
-					}
-					adjacencyMatrix.push_back(row);
+					converter >> weight;
+					row.push_back(weight);
 				}
-				graph.setAdjacencyMatrix(adjacencyMatrix);
+				adjacencyMatrix.push_back(row);
+
+				// Count down all matrix lines that are read
+				count2--;
 			}
+
+			graph.setAdjacencyMatrix(adjacencyMatrix);
 
 			if (converter.fail()) {
 				std::cout << linenr << ": Invalid input format." << std::endl;
 			}
 
-
 		}
 	}
 
+
 	return graph;
+}
+
+void Graph::printGraph() {
+	bool printTextDescription = true;
+	bool printZeroNode = true;
+	int numNodes = getNumberOfNodes();
+
+	if (printTextDescription) {
+		std::cout << "Number of nodes: " << std::endl;
+	}
+	std::cout << numNodes << std::endl;
+
+	if (printTextDescription) {
+		std::cout << "Global time limit: " << std::endl;
+	}
+	std::cout << getGlobalTimeLimit() << std::endl;
+
+	if (printTextDescription) {
+		std::cout << "Number of vehicles: ";
+	}
+	std::cout << getNumberOfVehicles() << std::endl;
+
+	if (printTextDescription) {
+		std::cout << "Nodes: " << std::endl;
+	}
+
+	for (int i=0; i<numNodes; i++) {
+		if (i==0 && !printZeroNode) {
+			continue;
+		}
+		std::string type;
+
+		switch (nodes.at(i)->getType()) {
+		case Node::ZERO:
+			type = "Z";
+			break;
+		case Node::SUPPLY:
+			type = "S";
+			break;
+		case Node::DEMAND:
+			type = "D";
+			break;
+		}
+
+		std::cout << i << " " << type << std::endl;
+	}
+
+	if (printTextDescription) {
+		std::cout << "Adjacency Matrix: " << std::endl;
+	}
+	for (int i=0; i<numNodes; i++) {
+		for (int j=0; j<numNodes; j++) {
+
+			std::cout << adjacencyMatrix.at(i).at(j) << " ";
+		}
+		std::cout << std::endl;
+	}
+
+}
+
+
+/** Auto generated Getters and setters **/
+const std::vector<std::vector<int> >& Graph::getAdjacencyMatrix() const {
+	return adjacencyMatrix;
+}
+
+void Graph::setAdjacencyMatrix(
+		const std::vector<std::vector<int> >& adjacencyMatrix) {
+	this->adjacencyMatrix = adjacencyMatrix;
+}
+
+const std::vector<Node*>& Graph::getDemandNodes() const {
+	return demandNodes;
+}
+
+int Graph::getGlobalTimeLimit() const {
+	return globalTimeLimit;
+}
+
+void Graph::setGlobalTimeLimit(int globalTimeLimit) {
+	this->globalTimeLimit = globalTimeLimit;
+}
+
+const std::vector<Node*>& Graph::getNodes() const {
+	return nodes;
+}
+
+int Graph::getNumberOfVehicles() const {
+	return numberOfVehicles;
+}
+
+void Graph::setNumberOfVehicles(int numberOfVehicles) {
+	this->numberOfVehicles = numberOfVehicles;
+}
+
+const std::vector<Node*>& Graph::getSupplyNodes() const {
+	return supplyNodes;
+}
+
+const Node* Graph::getZeroNode() const {
+	return zeroNode;
 }
 
 
