@@ -11,9 +11,24 @@
 namespace tcbvrp {
 
 class Node {
+
+	enum Type
+	{
+		ZERO,
+		SUPPLY,
+		DEMAND
+	};
+
 public:
-	Node();
+	Node(Node::Type type);
 	virtual ~Node();
+
+	Node::Type getType() const {
+		return type;
+	}
+
+private:
+	Node::Type type;
 };
 
 } /* namespace tcbvrp */

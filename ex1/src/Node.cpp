@@ -9,13 +9,11 @@
 
 namespace tcbvrp {
 
-Node::Node() {
-	// TODO Auto-generated constructor stub
+Node::Node(Node::Type type) : type(type) {
 
 }
 
 Node::~Node() {
-	// TODO Auto-generated destructor stub
 }
 
 } /* namespace tcbvrp */
