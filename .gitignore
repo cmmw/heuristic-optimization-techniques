@@ -1,0 +1,7 @@
+*.o
+paper/*/*.aux
+paper/*/*.out
+paper/*/*.log
+.cproject
+.project
+.directory
