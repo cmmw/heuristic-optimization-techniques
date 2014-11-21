@@ -1,10 +1,10 @@
 *.o
-paper/*/*.aux
-paper/*/*.out
-paper/*/*.log
-paper/*/*.pdf
+*.aux
+*.out
+*.log
+*.pdf
 .cproject
 .project
 .directory
-/Debug
+ex1/Debug
 *.gch
