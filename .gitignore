@@ -2,6 +2,7 @@
 paper/*/*.aux
 paper/*/*.out
 paper/*/*.log
+paper/*/*.pdf
 .cproject
 .project
 .directory
