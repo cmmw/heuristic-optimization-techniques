@@ -5,7 +5,7 @@ NAME = tcbvrp_solver
 all: tcbvrp_solver
 
 tcbvrp_solver: main.o Algorithm.o Graph.o Node.o
-	$(CC) $(CCFLAGS) -o $(NAME) $<
+	$(CC) $(CCFLAGS) -o $(NAME) $^
 	
 main.o: src/main.cpp
 	$(CC) $(CCFLAGS) -c $<
