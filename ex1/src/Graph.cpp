@@ -8,6 +8,8 @@
 #include "Graph.h"
 #include <iostream>
 #include <sstream>
+#include <fstream>
+
 
 namespace tcbvrp {
 
@@ -23,13 +25,13 @@ void Graph::addNode(Node* node) {
 	nodes.push_back(node);
 
 	switch (node->getType()) {
-	case Node::Type::ZERO:
+	case Node::ZERO:
 		zeroNode = node;
 		break;
-	case Node::Type::SUPPLY:
+	case Node::SUPPLY:
 		supplyNodes.push_back(node);
 		break;
-	case Node::Type::DEMAND:
+	case Node::DEMAND:
 		demandNodes.push_back(node);
 		break;
 	}
@@ -59,7 +61,7 @@ static Graph createGraph(std::string filename) {
 	int numVehicles = -1;
 	int globalTimeLimit = -1;
 
-	Node *zero = new Node(Node::Type::ZERO, 0);
+	Node *zero = new Node(Node::ZERO, 0);
 	graph.addNode(zero);
 
 	while (std::getline(input, line)) {
@@ -91,12 +93,12 @@ static Graph createGraph(std::string filename) {
 
 				switch (type) {
 				case 'S':
-					node = new Node(Node::Type::SUPPLY, id);
+					node = new Node(Node::SUPPLY, id);
 					break;
 				case 'D':
-					node = new Node(Node::Type::DEMAND, id);
+					node = new Node(Node::DEMAND, id);
 					break;
-				default 'D':
+				default:
 					std::cout << linenr << ": Invalid node type." << std::endl;
 				}
 

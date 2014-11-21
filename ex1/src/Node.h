@@ -11,7 +11,7 @@
 namespace tcbvrp {
 
 class Node {
-
+public:
 	enum Type
 	{
 		ZERO,
@@ -19,7 +19,6 @@ class Node {
 		DEMAND
 	};
 
-public:
 	Node(Node::Type type, int id);
 	virtual ~Node();
 
@@ -32,6 +31,8 @@ public:
 	}
 
 private:
+
+
 	Node::Type type;
 	int id;
 };

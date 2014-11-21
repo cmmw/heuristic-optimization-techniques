@@ -5,3 +5,5 @@ paper/*/*.log
 .cproject
 .project
 .directory
+/Debug
+*.gch
