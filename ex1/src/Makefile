@@ -15,6 +15,7 @@ all: $(NAME)
 
 $(NAME): $(OBJS)
 	$(CC) $(CCFLAGS) -o $(NAME) $^
+	mv $(NAME) ..
 	
 
 .SUFFIXES: .o .cpp .d
@@ -25,6 +26,6 @@ $(NAME): $(OBJS)
 	$(CC) -MM $(CCFLAGS) -MF $@ $<
 		
 clean:
-	rm -f $(OBJS) $(DEPS) $(NAME)
+	rm -f $(OBJS) $(DEPS) ../$(NAME)
 	
 -include $(DEPS)
