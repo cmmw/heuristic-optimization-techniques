@@ -12,18 +12,19 @@
 #include <vector>
 #include "Node.h"
 
-namespace tcbvrp {
+namespace tcbvrp
+{
 
-class Graph {
+class Graph
+{
 public:
-	Graph();
 	virtual ~Graph();
 
 	void addNode(Node* node);
 
 	static Graph createGraph(std::string filename);
 
-	int getNumberOfNodes();
+	int getNumberOfNodes() const;
 
 	void printGraph();
 
@@ -49,6 +50,7 @@ public:
 	const Node* getZeroNode() const;
 
 private:
+	Graph();
 	int globalTimeLimit;
 	int numberOfVehicles;
 
@@ -57,7 +59,7 @@ private:
 	std::vector<Node*> demandNodes;
 	Node *zeroNode;
 
-	std::vector< std::vector<int> > adjacencyMatrix;
+	std::vector<std::vector<int> > adjacencyMatrix;
 };
 
 } /* namespace tcbvrp */

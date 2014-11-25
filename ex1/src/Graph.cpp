@@ -9,22 +9,28 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
+#include <stdexcept>
 
+namespace tcbvrp
+{
 
-namespace tcbvrp {
-
-Graph::Graph() : globalTimeLimit(-1), numberOfVehicles(-1), zeroNode(0) {
+Graph::Graph() :
+		globalTimeLimit(-1), numberOfVehicles(-1), zeroNode(0)
+{
 
 }
 
-Graph::~Graph() {
+Graph::~Graph()
+{
 
 }
 
-void Graph::addNode(Node* node) {
+void Graph::addNode(Node* node)
+{
 	nodes.push_back(node);
 
-	switch (node->getType()) {
+	switch (node->getType())
+	{
 	case Node::ZERO:
 		zeroNode = node;
 		break;
@@ -37,21 +43,23 @@ void Graph::addNode(Node* node) {
 	}
 }
 
-int Graph::getNumberOfNodes() {
+int Graph::getNumberOfNodes() const
+{
 	return nodes.size();
 }
 
 /**
  * Reads given textfile and creates Graph objects as specified in the file.
  */
-Graph Graph::createGraph(std::string filename) {
+Graph Graph::createGraph(std::string filename)
+{
 
 	std::ifstream input(filename.c_str());
 	std::string line;
 	int linenr = 0;
 	std::string ref = "0123456789";
 	Graph graph;
-	std::vector< std::vector<int> > adjacencyMatrix;
+	std::vector<std::vector<int> > adjacencyMatrix;
 
 	int numNodes = -1;
 	int count = -1;
@@ -62,32 +70,45 @@ Graph Graph::createGraph(std::string filename) {
 	Node *zero = new Node(Node::ZERO, 0);
 	graph.addNode(zero);
 
-	while (std::getline(input, line)) {
+	if (!input.is_open())
+	{
+		std::string msg = "Could not open file " + filename;
+		throw std::runtime_error(msg);
+	}
+
+	while (std::getline(input, line))
+	{
 		linenr++;
 
-		if (ref.find(line[0]) == std::string::npos) {
+		if (ref.find(line[0]) == std::string::npos)
+		{
 			// Not a graph line (must start with a number)
 			continue;
 		}
-		else {
+		else
+		{
 			std::istringstream converter(line);
 
-			if (numNodes == -1) {
+			if (numNodes == -1)
+			{
 				converter >> numNodes;
 				count = numNodes;
-				count2 = numNodes+1;
+				count2 = numNodes + 1;
 			}
-			else if (globalTimeLimit == -1) {
+			else if (globalTimeLimit == -1)
+			{
 				converter >> globalTimeLimit;
 				graph.setGlobalTimeLimit(globalTimeLimit);
 
 			}
-			else if (numVehicles == -1) {
+			else if (numVehicles == -1)
+			{
 				converter >> numVehicles;
 				graph.setNumberOfVehicles(numVehicles);
 
 			}
-			else if (count > 0) {
+			else if (count > 0)
+			{
 				char type;
 				int id;
 				Node *node;
@@ -95,7 +116,8 @@ Graph Graph::createGraph(std::string filename) {
 				converter >> id;
 				converter >> type;
 
-				switch (type) {
+				switch (type)
+				{
 				case 'S':
 					node = new Node(Node::SUPPLY, id);
 					break;
@@ -111,12 +133,14 @@ Graph Graph::createGraph(std::string filename) {
 				// Count down all Nodes that are read
 				count--;
 			}
-			else if (count == 0 && count2 > 0) {
+			else if (count == 0 && count2 > 0)
+			{
 
 				int weight;
 				std::vector<int> row;
 
-				for (int i=0; i<numNodes+1; i++) {
+				for (int i = 0; i < numNodes + 1; i++)
+				{
 
 					converter >> weight;
 					row.push_back(weight);
@@ -129,48 +153,56 @@ Graph Graph::createGraph(std::string filename) {
 
 			graph.setAdjacencyMatrix(adjacencyMatrix);
 
-			if (converter.fail()) {
+			if (converter.fail())
+			{
 				std::cout << linenr << ": Invalid input format." << std::endl;
 			}
 
 		}
 	}
 
-
 	return graph;
 }
 
-void Graph::printGraph() {
+void Graph::printGraph()
+{
 	bool printTextDescription = true;
 	bool printZeroNode = true;
 	int numNodes = getNumberOfNodes();
 
-	if (printTextDescription) {
+	if (printTextDescription)
+	{
 		std::cout << "Number of nodes: " << std::endl;
 	}
 	std::cout << numNodes << std::endl;
 
-	if (printTextDescription) {
+	if (printTextDescription)
+	{
 		std::cout << "Global time limit: " << std::endl;
 	}
 	std::cout << getGlobalTimeLimit() << std::endl;
 
-	if (printTextDescription) {
+	if (printTextDescription)
+	{
 		std::cout << "Number of vehicles: ";
 	}
 	std::cout << getNumberOfVehicles() << std::endl;
 
-	if (printTextDescription) {
+	if (printTextDescription)
+	{
 		std::cout << "Nodes: " << std::endl;
 	}
 
-	for (int i=0; i<numNodes; i++) {
-		if (i==0 && !printZeroNode) {
+	for (int i = 0; i < numNodes; i++)
+	{
+		if (i == 0 && !printZeroNode)
+		{
 			continue;
 		}
 		std::string type;
 
-		switch (nodes.at(i)->getType()) {
+		switch (nodes.at(i)->getType())
+		{
 		case Node::ZERO:
 			type = "Z";
 			break;
@@ -185,11 +217,14 @@ void Graph::printGraph() {
 		std::cout << i << " " << type << std::endl;
 	}
 
-	if (printTextDescription) {
+	if (printTextDescription)
+	{
 		std::cout << "Adjacency Matrix: " << std::endl;
 	}
-	for (int i=0; i<numNodes; i++) {
-		for (int j=0; j<numNodes; j++) {
+	for (int i = 0; i < numNodes; i++)
+	{
+		for (int j = 0; j < numNodes; j++)
+		{
 
 			std::cout << adjacencyMatrix.at(i).at(j) << " ";
 		}
@@ -198,48 +233,56 @@ void Graph::printGraph() {
 
 }
 
-
 /** Auto generated Getters and setters **/
-const std::vector<std::vector<int> >& Graph::getAdjacencyMatrix() const {
+const std::vector<std::vector<int> >& Graph::getAdjacencyMatrix() const
+{
 	return adjacencyMatrix;
 }
 
 void Graph::setAdjacencyMatrix(
-		const std::vector<std::vector<int> >& adjacencyMatrix) {
+		const std::vector<std::vector<int> >& adjacencyMatrix)
+{
 	this->adjacencyMatrix = adjacencyMatrix;
 }
 
-const std::vector<Node*>& Graph::getDemandNodes() const {
+const std::vector<Node*>& Graph::getDemandNodes() const
+{
 	return demandNodes;
 }
 
-int Graph::getGlobalTimeLimit() const {
+int Graph::getGlobalTimeLimit() const
+{
 	return globalTimeLimit;
 }
 
-void Graph::setGlobalTimeLimit(int globalTimeLimit) {
+void Graph::setGlobalTimeLimit(int globalTimeLimit)
+{
 	this->globalTimeLimit = globalTimeLimit;
 }
 
-const std::vector<Node*>& Graph::getNodes() const {
+const std::vector<Node*>& Graph::getNodes() const
+{
 	return nodes;
 }
 
-int Graph::getNumberOfVehicles() const {
+int Graph::getNumberOfVehicles() const
+{
 	return numberOfVehicles;
 }
 
-void Graph::setNumberOfVehicles(int numberOfVehicles) {
+void Graph::setNumberOfVehicles(int numberOfVehicles)
+{
 	this->numberOfVehicles = numberOfVehicles;
 }
 
-const std::vector<Node*>& Graph::getSupplyNodes() const {
+const std::vector<Node*>& Graph::getSupplyNodes() const
+{
 	return supplyNodes;
 }
 
-const Node* Graph::getZeroNode() const {
+const Node* Graph::getZeroNode() const
+{
 	return zeroNode;
 }
-
 
 } /* namespace tcbvrp */

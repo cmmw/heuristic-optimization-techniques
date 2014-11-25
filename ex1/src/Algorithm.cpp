@@ -10,7 +10,7 @@
 namespace tcbvrp
 {
 
-Algorithm::Algorithm()
+Algorithm::Algorithm(Solution* solution, const Graph& graph) : solution(solution), graph(graph)
 {
 	// TODO Auto-generated constructor stub
 }

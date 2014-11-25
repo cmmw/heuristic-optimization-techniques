@@ -1,23 +1,13 @@
-CCFLAGS = -g -pedantic -Wall
-CC = g++
-NAME = tcbvrp_solver
+SRCDIR=src
 
-all: tcbvrp_solver
+.PHONY: all $(SRCDIR)
 
-tcbvrp_solver: main.o Algorithm.o Graph.o Node.o
-	$(CC) $(CCFLAGS) -o $(NAME) $^
-	
-main.o: src/main.cpp
-	$(CC) $(CCFLAGS) -c $<
+default: all
 
-Algorithm.o: src/Algorithm.cpp src/Algorithm.h
-	$(CC) $(CCFLAGS) -c $<
+all: $(SRCDIR)
 
-Graph.o: src/Graph.cpp src/Graph.h src/Node.h
-	$(CC) $(CCFLAGS) -c $<
-
-Node.o: src/Node.cpp src/Node.h
-	$(CC) $(CCFLAGS) -c $<
+$(SRCDIR): 
+	${MAKE} -C $(SRCDIR) all
 	
 clean:
-	rm -rf *.o src/*.gch $(NAME)
+	${MAKE} -C $(SRCDIR) clean

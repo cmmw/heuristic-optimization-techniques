@@ -5,6 +5,7 @@
 #include <string>
 
 #include "Graph.h"
+#include "ConstHeu.h"
 
 using namespace tcbvrp;
 
@@ -54,6 +55,9 @@ int main(int argc, char* argv[])
 
 	graph.printGraph();
 
+	Solution sol;
+	ConstHeu cons(&sol, graph);
+	cons.solve();
 
 	return 0;
 }

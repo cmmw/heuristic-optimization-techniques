@@ -8,14 +8,24 @@
 #ifndef ALGORITHM_H_
 #define ALGORITHM_H_
 
+#include "Solution.h"
+#include "Graph.h"
+
 namespace tcbvrp
 {
 
 class Algorithm
 {
 public:
-	Algorithm();
+	Algorithm(Solution* solution, const Graph& graph);
 	virtual ~Algorithm();
+
+	virtual void solve() = 0;
+
+protected:
+	Solution* solution;
+	const Graph& graph;
+
 };
 
 } /* namespace tcbvrp */
