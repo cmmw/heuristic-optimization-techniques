@@ -30,11 +30,22 @@ public:
 		return type;
 	}
 
+	void setVisited(bool val)
+	{
+		visited = val;
+	}
+
+	bool getVisited() const
+	{
+		return visited;
+	}
+
 private:
 
 
 	Node::Type type;
 	int id;
+	bool visited;
 };
 
 } /* namespace tcbvrp */
