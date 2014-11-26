@@ -136,6 +136,7 @@ void ConstHeu::solve()
 	/*Print results*/
 	std::cout << "tours: " << std::endl;
 	int c = 0;
+	int totalCosts = 0;
 	for (std::vector<std::vector<Node*> >::iterator tour = tours.begin(); tour != tours.end(); tour++)
 	{
 		std::cout << std::endl;
@@ -160,8 +161,10 @@ void ConstHeu::solve()
 			}
 		}
 		std::cout << costs << std::endl;
+		totalCosts += costs;
 	}
 	std::cout << std::endl << tours.size() << " tours created, allowed: " << graph.getNumberOfVehicles() << std::endl;
+	std::cout << "Total costs: " << totalCosts << std::endl;
 
 }
 
