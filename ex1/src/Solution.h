@@ -25,6 +25,7 @@ public:
 	void setTours(const std::vector<std::vector<Node*> >& tours);
 	void clear();
 	unsigned int getNumberOfTours() const;
+	void printSolution() const;
 
 private:
 	std::vector<std::vector<Node*> > tours;

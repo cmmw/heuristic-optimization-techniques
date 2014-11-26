@@ -76,7 +76,7 @@ void ConstHeu::solve()
 	for (std::vector<Node*>::const_iterator it = supplyNodes.begin(); it != supplyNodes.end(); it++)
 	{
 		Node* tmpNode = (*it);
-		if (tmpNode->getVisited())			//if this supply node is already visited get the next one
+		if (tmpNode->getVisited())			//if this supply node is already visited go to the next one
 			continue;
 		std::vector<Node*> tour;
 		tour.push_back(tmpNode);
@@ -127,25 +127,8 @@ void ConstHeu::solve()
 	}
 
 	/*Print results*/
-	std::cout << "tours: " << std::endl << std::endl;
-	int c = 0;
-	int totalCosts = 0;
-	for (std::vector<std::vector<Node*> >::const_iterator tour = solution->getTours().begin(); tour != solution->getTours().end(); tour++)
-	{
-		c++;
-		std::cout << "tour " << c << ":" << std::endl;
-		for (std::vector<Node*>::const_iterator it = tour->begin(); it != tour->end(); it++)
-		{
-			std::string type = ((*it)->getType() == Node::SUPPLY) ? "S" : "D";
-			std::cout << (*it)->getId() << type << ", ";
-		}
-		int costs = Graph::calcTourCosts(*tour, matrix);
-		std::cout << std::endl << "costs: " << costs << std::endl << std::endl;
-		totalCosts += costs;
-	}
+	solution->printSolution();
 	std::cout << solution->getNumberOfTours() << " tours created, allowed: " << graph.getNumberOfVehicles() << std::endl;
-	std::cout << "Total costs: " << totalCosts << std::endl;
-
 }
 
 } /* namespace tcbvrp */
