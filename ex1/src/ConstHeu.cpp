@@ -5,11 +5,10 @@
  *      Author: christian
  */
 
-#include <algorithm>
 #include <iostream>
 #include <list>
 #include "ConstHeu.h"
-#include "NodeCompare.h"
+
 
 namespace tcbvrp
 {
@@ -40,14 +39,14 @@ void ConstHeu::solve()
 	for (unsigned int i = 0; i < demandNodes.size(); i++)
 	{
 		bestNeighbors[demandNodes[i]->getId()] = supplyNodes;
-		Graph::sortNeighborsByDescEdgeCosts(bestNeighbors[demandNodes[i]->getId()], graph.getAdjacencyMatrix()[demandNodes[i]->getId()]);
+		Algorithm::sortNeighborsByDescEdgeCosts(bestNeighbors[demandNodes[i]->getId()], graph.getAdjacencyMatrix()[demandNodes[i]->getId()]);
 	}
 
 	//Sort neighbors for supply-nodes in bestNeighbors
 	for (unsigned int i = 0; i < supplyNodes.size(); i++)
 	{
 		bestNeighbors[supplyNodes[i]->getId()] = demandNodes;
-		Graph::sortNeighborsByDescEdgeCosts(bestNeighbors[supplyNodes[i]->getId()], graph.getAdjacencyMatrix()[supplyNodes[i]->getId()]);
+		Algorithm::sortNeighborsByDescEdgeCosts(bestNeighbors[supplyNodes[i]->getId()], graph.getAdjacencyMatrix()[supplyNodes[i]->getId()]);
 	}
 
 	/***/

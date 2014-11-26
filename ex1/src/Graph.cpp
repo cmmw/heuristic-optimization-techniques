@@ -9,9 +9,8 @@
 #include <sstream>
 #include <fstream>
 #include <stdexcept>
-#include <algorithm>
 #include "Graph.h"
-#include "NodeCompare.h"
+
 
 namespace tcbvrp
 {
@@ -285,27 +284,6 @@ const std::vector<Node*>& Graph::getSupplyNodes() const
 const Node* Graph::getZeroNode() const
 {
 	return zeroNode;
-}
-
-unsigned int Graph::calcTourCosts(const std::vector<Node*> &tour, const std::vector<std::vector<int> >& matrix)
-{
-	int costs = 0;
-	costs += matrix[0][(*tour.begin())->getId()];
-	for (std::vector<Node*>::const_iterator it1 = tour.begin(), it2 = it1 + 1; it2 != tour.end(); it1++, it2++)
-	{
-		costs += matrix[(*it1)->getId()][(*it2)->getId()];
-		if ((it2 + 1) == tour.end())
-		{
-			costs += matrix[(*it2)->getId()][0];
-		}
-	}
-	return costs;
-}
-
-void Graph::sortNeighborsByDescEdgeCosts(std::vector<Node*> &nodes, const std::vector<int>& costRow)
-{
-	NodeCompare comp(costRow);
-	std::sort(nodes.begin(), nodes.end(), comp);
 }
 
 } /* namespace tcbvrp */
