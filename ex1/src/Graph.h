@@ -49,6 +49,11 @@ public:
 
 	const Node* getZeroNode() const;
 
+	/*Helper functions*/
+	static unsigned int calcTourCosts(const std::vector<Node*> &tour, const std::vector<std::vector<int> >& costs);
+	/*Sorts nodes in descending order corresponding to the costs in costRow*/
+	static void sortNeighborsByDescEdgeCosts(std::vector<Node*> &nodes, const std::vector<int>& costRow);
+
 private:
 	Graph();
 	int globalTimeLimit;

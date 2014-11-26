@@ -55,7 +55,7 @@ int main(int argc, char* argv[])
 
 	graph.printGraph();
 
-	Solution sol;
+	Solution sol(graph.getAdjacencyMatrix());
 	ConstHeu cons(&sol, graph);
 	cons.solve();
 
