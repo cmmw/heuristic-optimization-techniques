@@ -29,13 +29,14 @@ private:
 	std::vector<std::pair<std::pair<int, int>, double> > rankUsingRelatedness(const std::pair<Node*, Node*>& nodePair, int tourIdx) const;
 	double relatedness(const std::pair<Node*, Node*>& n1, int tourIdx1, const std::pair<Node*, Node*>& n2, int tourIdx2) const;
 	static bool sortNodes(const std::pair<std::pair<int, int>, int>& n1, const std::pair<std::pair<int, int>, int>& n2);
-	void reinsertPairs(std::vector<std::pair<Node*, Node*> > pairs);
+	void reinsertPairs(std::vector<std::pair<Node*, Node*> > pairs, int curCosts);
 	unsigned int random(unsigned int max);
-	void insertAtPosition(std::pair<Node*, Node*> pair, std::pair<int, int> position);
+	int insertAtPosition(std::pair<Node*, Node*> pair, std::pair<int, int> position);
 	void removeAtPosition(std::pair<int, int> position);
 	std::vector<std::pair<int, int> > getPositionsForPair(std::pair<Node*, Node*> pair);
 
 	Solution bestSolution;
+	int bestCosts;
 };
 
 } /* namespace tcbvrp */
