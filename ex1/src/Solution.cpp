@@ -67,4 +67,14 @@ void Solution::printSolution() const
 	std::cout << "Total costs: " << totalCosts << std::endl;
 }
 
+int Solution::getTotalCosts() const
+{
+	int totalCosts = 0;
+	for (std::vector<std::vector<Node*> >::const_iterator it = tours.begin(); it != tours.end(); it++)
+	{
+		totalCosts += Algorithm::calcTourCosts(*it, costs);
+	}
+	return totalCosts;
+}
+
 } /* namespace tcbvrp */

@@ -26,7 +26,7 @@ public:
 	void clear();
 	int getNumberOfTours() const;
 	void printSolution() const;
-	Solution copy() const;
+	int getTotalCosts() const;
 
 private:
 	std::vector<std::vector<Node*> > tours;
