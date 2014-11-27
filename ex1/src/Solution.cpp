@@ -17,11 +17,6 @@ Solution::Solution(const std::vector<std::vector<int> >& costs) :
 {
 }
 
-Solution::Solution(const Solution& cpy) :
-		tours(cpy.tours), costs(cpy.costs)
-{
-}
-
 Solution::~Solution()
 {
 }

@@ -18,7 +18,6 @@ class Solution
 {
 public:
 	Solution(const std::vector<std::vector<int> >& costs);
-	Solution(const Solution& cpy);
 	virtual ~Solution();
 
 	void addTour(const std::vector<Node*> &tour);
