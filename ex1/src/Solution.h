@@ -18,10 +18,11 @@ class Solution
 {
 public:
 	Solution(const std::vector<std::vector<int> >& costs);
+	Solution();
 	virtual ~Solution();
 
 	void addTour(const std::vector<Node*> &tour);
-	const std::vector<std::vector<Node*> >& getTours() const;
+	std::vector<std::vector<Node*> >& getTours();
 	void setTours(const std::vector<std::vector<Node*> >& tours);
 	void clear();
 	int getNumberOfTours() const;

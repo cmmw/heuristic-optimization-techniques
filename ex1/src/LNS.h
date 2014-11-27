@@ -22,8 +22,16 @@ public:
 	void solve();
 
 private:
-	std::vector<std::pair<Node*, Node*> > removeVisits(int count);
-	void reinsertVisits(std::vector<std::pair<Node*, Node*> > nodeIds);
+	std::vector< std::pair<Node*, Node*> > removeVisits(int count);
+	void reinsertPairs(std::vector<std::pair<Node*, Node*> > pairs);
+
+
+	void insertAtPosition(std::pair<Node*, Node*> pair, std::pair<int, int> position);
+	void removeAtPosition(std::pair<int, int> position);
+
+	std::vector< std::pair<int, int> > getPositionsForPair(std::pair<Node*, Node*> pair);
+
+	Solution bestSolution;
 };
 
 } /* namespace tcbvrp */
