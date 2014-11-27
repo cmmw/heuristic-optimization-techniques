@@ -75,16 +75,22 @@ std::vector<std::pair<Node*, Node*> > LNS::removeVisits(unsigned int count)
 
 		std::vector<std::pair<int, int> > lst; // = rankUsingRelatedness(removed[r1]);		//c_ij = cost of pair<n1,n2> = cost n1 -> n2
 
-		double rnd2 = (double) rand() - 1;
-		rnd2 = (rnd2 == -1) ? 0 : rnd2;
-		double rnd = (rnd2 / (RAND_MAX));
-		int idx = (lst.size() - 1) * pow(rnd, D);
+		double rnd1 = (double) rand() - 1;
+		rnd1 = (rnd1 == -1) ? 0 : rnd1;
+		double rnd2 = (rnd1 / (RAND_MAX));
+		int idx = (lst.size() - 1) * pow(rnd2, D);
 
-		Node* n1 = solution->getTours()[lst[idx].first][lst[idx].second];
-		Node* n2 = solution->getTours()[lst[idx].first][lst[idx].second + 1];
+		int rowIdx = lst[idx].first;
+		int elIdx = lst[idx].second;
+
+		std::vector<Node*> &row = solution->getTours()[rowIdx];
+
+		Node* n1 = row[elIdx];
+		Node* n2 = row[elIdx + 1];
+		row.erase(row.begin() + elIdx);
+		row.erase(row.begin() + elIdx + 1);
 
 		removed.push_back(std::pair<Node*, Node*>(n1, n2));
-
 	}
 	return removed;
 }
