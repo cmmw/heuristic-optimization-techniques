@@ -18,6 +18,7 @@ class Solution
 {
 public:
 	Solution(const std::vector<std::vector<int> >& costs);
+	Solution(const Solution& cpy);
 	virtual ~Solution();
 
 	void addTour(const std::vector<Node*> &tour);
@@ -26,6 +27,7 @@ public:
 	void clear();
 	int getNumberOfTours() const;
 	void printSolution() const;
+	Solution copy() const;
 
 private:
 	std::vector<std::vector<Node*> > tours;

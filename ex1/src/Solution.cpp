@@ -17,6 +17,11 @@ Solution::Solution(const std::vector<std::vector<int> >& costs) :
 {
 }
 
+Solution::Solution(const Solution& cpy) :
+		tours(cpy.tours), costs(cpy.costs)
+{
+}
+
 Solution::~Solution()
 {
 }
@@ -60,7 +65,7 @@ void Solution::printSolution() const
 			std::string type = ((*it)->getType() == Node::SUPPLY) ? "S" : "D";
 			std::cout << (*it)->getId() << type << ", ";
 		}
-		int tourCosts =Algorithm::calcTourCosts(*tour, costs);
+		int tourCosts = Algorithm::calcTourCosts(*tour, costs);
 		std::cout << std::endl << "Costs: " << tourCosts << std::endl << std::endl;
 		totalCosts += tourCosts;
 	}
