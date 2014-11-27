@@ -9,7 +9,6 @@
 #include <list>
 #include "ConstHeu.h"
 
-
 namespace tcbvrp
 {
 
@@ -101,12 +100,12 @@ void ConstHeu::solve()
 			tmpNode = cheapest;
 
 			//check if time to visit tmpNode + time to visit 0 node is below the time limit
-			if (curCosts + matrix[prvNode->getId()][tmpNode->getId()] + matrix[tmpNode->getId()][0] <= graph.getGlobalTimeLimit())
+			if (curCosts + matrix[prvNode->getId()][tmpNode->getId()] + matrix[tmpNode->getId()][0] <= graph.getGlobalTimeLimit() || solution->getNumberOfTours() == graph.getNumberOfVehicles() - 1)
 			{
 				curCosts += matrix[prvNode->getId()][tmpNode->getId()];
 				tmpNode->setVisited(true);
 				tour.push_back(tmpNode);
-			} else		//if not, close this tour
+			} else //if not, close this tour (only if there are vehicles left, otherwise violate the time limit in the last tour)
 			{
 				break;
 			}

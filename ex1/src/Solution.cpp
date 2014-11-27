@@ -41,7 +41,7 @@ void Solution::setTours(const std::vector<std::vector<Node*> >& tours)
 	this->tours = tours;
 }
 
-unsigned int Solution::getNumberOfTours() const
+int Solution::getNumberOfTours() const
 {
 	return this->tours.size();
 }
