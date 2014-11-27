@@ -5,8 +5,10 @@
  *      Author: ixi
  */
 
-#include "LNS.h"
+#include <cstdlib>
+#include <cmath>
 
+#include "LNS.h"
 #include "Constants.h"
 
 namespace tcbvrp
@@ -15,7 +17,7 @@ namespace tcbvrp
 LNS::LNS(Solution* solution, const Graph& graph) :
 		Algorithm(solution, graph)
 {
-
+	srand(time(NULL));
 }
 
 LNS::~LNS()
@@ -53,14 +55,47 @@ void LNS::solve()
 	}
 }
 
-std::vector<std::pair<Node*, Node*> > LNS::removeVisits(int count)
+std::vector<std::pair<Node*, Node*> > LNS::removeVisits(unsigned int count)
 {
-	std::vector<std::pair<Node*, Node*> > temp;
-	return temp;
+	std::vector<std::pair<Node*, Node*> > removed(count);
+	std::vector<std::vector<Node*> >& tours = solution->getTours();
+	unsigned int row = random(solution->getNumberOfTours());
+	unsigned int r1, r2;
+
+	r1 = random(tours[row].size() - 1);
+	r2 = r1 + 1;
+
+	removed.push_back(std::pair<Node*, Node*>(tours[row][r1], tours[row][r2]));
+	tours[row].erase(tours[row].begin() + r1);
+	tours[row].erase(tours[row].begin() + r2);
+
+	while (removed.size() < count)
+	{
+		r1 = random(removed.size());
+
+		std::vector<std::pair<int, int> > lst; // = rankUsingRelatedness(removed[r1]);		//c_ij = cost of pair<n1,n2> = cost n1 -> n2
+
+		double rnd2 = (double) rand() - 1;
+		rnd2 = (rnd2 == -1) ? 0 : rnd2;
+		double rnd = (rnd2 / (RAND_MAX));
+		int idx = (lst.size() - 1) * pow(rnd, D);
+
+		Node* n1 = solution->getTours()[lst[idx].first][lst[idx].second];
+		Node* n2 = solution->getTours()[lst[idx].first][lst[idx].second + 1];
+
+		removed.push_back(std::pair<Node*, Node*>(n1, n2));
+
+	}
+	return removed;
 }
 
 void LNS::reinsertVisits(std::vector<std::pair<Node*, Node*> > nodeIds)
 {
+}
+
+unsigned int LNS::random(unsigned int max)
+{
+	return rand() % max;
 }
 
 } /* namespace tcbvrp */

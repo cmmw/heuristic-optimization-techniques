@@ -12,9 +12,11 @@
 #include <utility>
 #include "Algorithm.h"
 
-namespace tcbvrp {
+namespace tcbvrp
+{
 
-class LNS: public Algorithm {
+class LNS: public Algorithm
+{
 public:
 	LNS(Solution* solution, const Graph& graph);
 	virtual ~LNS();
@@ -22,9 +24,10 @@ public:
 	void solve();
 
 private:
-	std::vector<std::pair<Node*, Node*> > removeVisits(int count);
+	std::vector<std::pair<Node*, Node*> > removeVisits(unsigned int count);
 	void reinsertVisits(std::vector<std::pair<Node*, Node*> > nodeIds);
-};
+	unsigned int random(unsigned int max);
+	};
 
 } /* namespace tcbvrp */
 

@@ -26,7 +26,7 @@ void Solution::addTour(const std::vector<Node*> &tour)
 	tours.push_back(tour);
 }
 
-const std::vector<std::vector<Node*> >& Solution::getTours() const
+std::vector<std::vector<Node*> >& Solution::getTours()
 {
 	return tours;
 }
