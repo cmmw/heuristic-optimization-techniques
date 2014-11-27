@@ -39,14 +39,14 @@ void ConstHeu::solve()
 	for (unsigned int i = 0; i < demandNodes.size(); i++)
 	{
 		bestNeighbors[demandNodes[i]->getId()] = supplyNodes;
-		Algorithm::sortNeighborsByDescEdgeCosts(bestNeighbors[demandNodes[i]->getId()], graph.getAdjacencyMatrix()[demandNodes[i]->getId()]);
+		Algorithm::sortNeighborsByAscEdgeCosts(bestNeighbors[demandNodes[i]->getId()], graph.getAdjacencyMatrix()[demandNodes[i]->getId()]);
 	}
 
 	//Sort neighbors for supply-nodes in bestNeighbors
 	for (unsigned int i = 0; i < supplyNodes.size(); i++)
 	{
 		bestNeighbors[supplyNodes[i]->getId()] = demandNodes;
-		Algorithm::sortNeighborsByDescEdgeCosts(bestNeighbors[supplyNodes[i]->getId()], graph.getAdjacencyMatrix()[supplyNodes[i]->getId()]);
+		Algorithm::sortNeighborsByAscEdgeCosts(bestNeighbors[supplyNodes[i]->getId()], graph.getAdjacencyMatrix()[supplyNodes[i]->getId()]);
 	}
 
 	/***/

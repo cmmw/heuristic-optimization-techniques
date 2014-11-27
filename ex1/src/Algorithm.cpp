@@ -38,7 +38,7 @@ unsigned int Algorithm::calcTourCosts(const std::vector<Node*> &tour, const std:
 	return costs;
 }
 
-void Algorithm::sortNeighborsByDescEdgeCosts(std::vector<Node*> &nodes, const std::vector<int>& costRow)
+void Algorithm::sortNeighborsByAscEdgeCosts(std::vector<Node*> &nodes, const std::vector<int>& costRow)
 {
 	NodeCompare comp(costRow);
 	std::sort(nodes.begin(), nodes.end(), comp);

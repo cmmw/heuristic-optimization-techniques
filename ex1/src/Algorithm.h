@@ -25,7 +25,7 @@ public:
 	/*Helper functions*/
 	static unsigned int calcTourCosts(const std::vector<Node*> &tour, const std::vector<std::vector<int> >& costs);
 	/*Sorts nodes in descending order corresponding to the costs in costRow*/
-	static void sortNeighborsByDescEdgeCosts(std::vector<Node*> &nodes, const std::vector<int>& costRow);
+	static void sortNeighborsByAscEdgeCosts(std::vector<Node*> &nodes, const std::vector<int>& costRow);
 
 protected:
 	Solution* solution;
