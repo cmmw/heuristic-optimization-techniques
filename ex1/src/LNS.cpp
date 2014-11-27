@@ -17,7 +17,7 @@ namespace tcbvrp
 {
 
 LNS::LNS(Solution* solution, const Graph& graph) :
-		Algorithm(solution, graph), bestSolution(*solution)
+		Algorithm(solution, graph), bestSolution(*solution), bestCosts(solution->getTotalCosts())
 {
 	srand(time(NULL));
 }
@@ -45,9 +45,10 @@ void LNS::solve()
 		pairs = removeVisits(removes);
 
 		// Reinsert the pairs
-		reinsertPairs(pairs);
+		reinsertPairs(pairs, solution->getTotalCosts());
 
 		*solution = bestSolution;
+		bestCosts = solution->getTotalCosts();
 		trials++;
 	}
 }
@@ -124,11 +125,15 @@ bool LNS::sortNodes(const std::pair<std::pair<int, int>, int>& n1, const std::pa
 	return n1.first < n2.first;
 }
 
-void LNS::reinsertPairs(std::vector<std::pair<Node*, Node*> > pairs)
+void LNS::reinsertPairs(std::vector<std::pair<Node*, Node*> > pairs, int curCosts)
 {
 	if (pairs.size() == 0)
 	{
-		if (solution->getTotalCosts() < bestSolution.getTotalCosts())
+		std::cout << "***" << std::endl;
+		std::cout << curCosts << ":" << bestCosts << std::endl;
+		std::cout << solution->getTotalCosts() << ":" << bestSolution.getTotalCosts() << std::endl;
+		std::cout << "---" << std::endl;
+		if (curCosts < bestCosts)
 		{
 			bestSolution = *solution;
 			bestSolution.printSolution();
@@ -142,8 +147,8 @@ void LNS::reinsertPairs(std::vector<std::pair<Node*, Node*> > pairs)
 		for (std::vector<std::pair<int, int> >::iterator it = positions.begin(); it != positions.end(); it++)
 		{
 			bool violated = false;
-			insertAtPosition(currentPair, *it);
-			//TODO return delta costs at insertAtPosition instead of calling calcTourCosts everytime
+			int delta;
+			delta = insertAtPosition(currentPair, *it);
 			for (std::vector<std::vector<Node*> >::iterator tour = solution->getTours().begin(); tour != solution->getTours().end(); tour++)
 			{
 				if (Algorithm::calcTourCosts(*tour, graph.getAdjacencyMatrix()) > graph.getGlobalTimeLimit())
@@ -153,16 +158,36 @@ void LNS::reinsertPairs(std::vector<std::pair<Node*, Node*> > pairs)
 				}
 			}
 			if (!violated)
-				reinsertPairs(pairs);
+				reinsertPairs(pairs, curCosts + delta);
 			removeAtPosition(*it);
 		}
 	}
 }
 
-void LNS::insertAtPosition(std::pair<Node*, Node*> pair, std::pair<int, int> position)
+int LNS::insertAtPosition(std::pair<Node*, Node*> pair, std::pair<int, int> position)
 {
-	solution->getTours()[position.first].insert(solution->getTours()[position.first].begin() + position.second, pair.second);
-	solution->getTours()[position.first].insert(solution->getTours()[position.first].begin() + position.second, pair.first);
+	const std::vector<std::vector<int> >& matrix = graph.getAdjacencyMatrix();
+	int delta;
+	std::vector<Node*> &tour = solution->getTours()[position.first];
+
+	const Node *n1, *n2;
+	if (position.second == 0)
+		n1 = graph.getZeroNode();
+	else
+		n1 = tour[position.second - 1];
+
+	if (position.second == (int) tour.size())
+		n2 = graph.getZeroNode();
+	else
+		n2 = tour[position.second];
+
+	delta = matrix[pair.first->getId()][pair.second->getId()];
+	delta -= matrix[n1->getId()][n2->getId()];
+	delta += matrix[n1->getId()][pair.first->getId()];
+	delta += matrix[pair.second->getId()][n2->getId()];
+	tour.insert(tour.begin() + position.second, pair.second);
+	tour.insert(tour.begin() + position.second, pair.first);
+	return delta;
 }
 
 void LNS::removeAtPosition(std::pair<int, int> position)
