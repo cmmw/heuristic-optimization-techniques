@@ -30,7 +30,7 @@ public:
 
 private:
 	std::vector<std::vector<Node*> > tours;
-	const std::vector<std::vector<int> > costs;
+	std::vector<std::vector<int> > costs;
 };
 
 } /* namespace tcbvrp */
