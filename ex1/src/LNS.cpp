@@ -23,6 +23,7 @@ void LNS::solve() {
 	// the overall search procedure
 	int removes = START_REMOVES;
 	int trials = 0;
+	std::vector<int> visits;
 
 	while (removes <= REMOVE_LIMIT) {
 		if (trials == TRIALS_PER_COUNT) {
@@ -34,19 +35,15 @@ void LNS::solve() {
 		Solution old = *solution;
 
 		// Choose Visits to remove
-
+		visits = removeVisits(removes);
 
 		// Reinsert the visits
+		reinsertVisits(visits);
 
-
-		if (true) {
+		if (old.getTotalCosts() < solution->getTotalCosts()) {
 			*solution = old;
 		}
 	}
-
-
-
-
 }
 
 std::vector<int> LNS::removeVisits(int count) {
