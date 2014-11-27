@@ -17,6 +17,10 @@ Solution::Solution(const std::vector<std::vector<int> >& costs) :
 {
 }
 
+Solution::Solution() {
+
+}
+
 Solution::~Solution()
 {
 }
