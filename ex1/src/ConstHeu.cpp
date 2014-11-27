@@ -79,7 +79,7 @@ void ConstHeu::solve()
 		std::vector<Node*> tour;
 		tour.push_back(tmpNode);
 		tmpNode->setVisited(true);
-		int curCosts = graph.getAdjacencyMatrix()[0][tmpNode->getId()];		//cost from 0 to tmpNode
+		unsigned int curCosts = graph.getAdjacencyMatrix()[0][tmpNode->getId()];		//cost from 0 to tmpNode
 		while (true)
 		{
 			//take cheapest unvisited node within the neighbors of tmpNode
@@ -123,10 +123,6 @@ void ConstHeu::solve()
 			solution->addTour(tour);
 		}
 	}
-
-	/*Print results*/
-	solution->printSolution();
-	std::cout << solution->getNumberOfTours() << " tours created, allowed: " << graph.getNumberOfVehicles() << std::endl;
 }
 
 } /* namespace tcbvrp */

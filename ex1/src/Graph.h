@@ -35,7 +35,7 @@ public:
 
 	const std::vector<Node*>& getDemandNodes() const;
 
-	int getGlobalTimeLimit() const;
+	unsigned int getGlobalTimeLimit() const;
 
 	void setGlobalTimeLimit(int globalTimeLimit);
 
@@ -49,10 +49,13 @@ public:
 
 	const Node* getZeroNode() const;
 
+	int getMaxCosts() const;
+
 private:
 	Graph();
 	int globalTimeLimit;
 	int numberOfVehicles;
+	static int maxCosts;
 
 	std::vector<Node*> nodes;
 	std::vector<Node*> supplyNodes;

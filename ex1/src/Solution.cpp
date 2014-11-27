@@ -17,10 +17,6 @@ Solution::Solution(const std::vector<std::vector<int> >& costs) :
 {
 }
 
-Solution::Solution() {
-
-}
-
 Solution::~Solution()
 {
 }
@@ -52,6 +48,7 @@ int Solution::getNumberOfTours() const
 
 void Solution::printSolution() const
 {
+	std::cout << std::endl << "********* SOLUTION *********" << std::endl;
 	std::cout << "Tours: " << std::endl << std::endl;
 	int c = 0;
 	int totalCosts = 0;
@@ -76,7 +73,8 @@ int Solution::getTotalCosts() const
 	int totalCosts = 0;
 	for (std::vector<std::vector<Node*> >::const_iterator it = tours.begin(); it != tours.end(); it++)
 	{
-		totalCosts += Algorithm::calcTourCosts(*it, costs);
+		if ((*it).size() != 0)
+			totalCosts += Algorithm::calcTourCosts(*it, costs);
 	}
 	return totalCosts;
 }

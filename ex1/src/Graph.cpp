@@ -11,9 +11,10 @@
 #include <stdexcept>
 #include "Graph.h"
 
-
 namespace tcbvrp
 {
+
+int Graph::maxCosts = 0;
 
 Graph::Graph() :
 		globalTimeLimit(-1), numberOfVehicles(-1), zeroNode(0)
@@ -142,7 +143,8 @@ Graph Graph::createGraph(std::string filename)
 
 				for (int i = 0; i < numNodes + 1; i++)
 				{
-
+					if (weight > maxCosts)
+						maxCosts = weight;
 					converter >> weight;
 					row.push_back(weight);
 				}
@@ -251,7 +253,7 @@ const std::vector<Node*>& Graph::getDemandNodes() const
 	return demandNodes;
 }
 
-int Graph::getGlobalTimeLimit() const
+unsigned int Graph::getGlobalTimeLimit() const
 {
 	return globalTimeLimit;
 }
@@ -284,6 +286,11 @@ const std::vector<Node*>& Graph::getSupplyNodes() const
 const Node* Graph::getZeroNode() const
 {
 	return zeroNode;
+}
+
+int Graph::getMaxCosts() const
+{
+	return this->maxCosts;
 }
 
 } /* namespace tcbvrp */
