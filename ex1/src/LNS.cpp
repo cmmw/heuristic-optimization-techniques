@@ -9,24 +9,30 @@
 
 #include "Constants.h"
 
-namespace tcbvrp {
+namespace tcbvrp
+{
 
 LNS::LNS(Solution* solution, const Graph& graph) :
-		Algorithm(solution, graph) {
+		Algorithm(solution, graph)
+{
 
 }
 
-LNS::~LNS() {
+LNS::~LNS()
+{
 }
 
-void LNS::solve() {
+void LNS::solve()
+{
 	// the overall search procedure
 	int removes = START_REMOVES;
 	int trials = 0;
-	std::vector<int> visits;
+	std::vector<std::pair<Node*, Node*> > visits;
 
-	while (removes <= REMOVE_LIMIT) {
-		if (trials == TRIALS_PER_COUNT) {
+	while (removes <= REMOVE_LIMIT)
+	{
+		if (trials == TRIALS_PER_COUNT)
+		{
 			removes++;
 			trials = 0;
 		}
@@ -40,18 +46,21 @@ void LNS::solve() {
 		// Reinsert the visits
 		reinsertVisits(visits);
 
-		if (old.getTotalCosts() < solution->getTotalCosts()) {
+		if (old.getTotalCosts() < solution->getTotalCosts())
+		{
 			*solution = old;
 		}
 	}
 }
 
-std::vector<int> LNS::removeVisits(int count) {
-	std::vector<int> temp;
+std::vector<std::pair<Node*, Node*> > LNS::removeVisits(int count)
+{
+	std::vector<std::pair<Node*, Node*> > temp;
 	return temp;
 }
 
-void LNS::reinsertVisits(std::vector<int> nodeIds) {
+void LNS::reinsertVisits(std::vector<std::pair<Node*, Node*> > nodeIds)
+{
 }
 
 } /* namespace tcbvrp */

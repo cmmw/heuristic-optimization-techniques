@@ -9,6 +9,7 @@
 #define LNS_H_
 
 #include <vector>
+#include <utility>
 #include "Algorithm.h"
 
 namespace tcbvrp {
@@ -21,8 +22,8 @@ public:
 	void solve();
 
 private:
-	std::vector<int> removeVisits(int count);
-	void reinsertVisits(std::vector<int> nodeIds);
+	std::vector<std::pair<Node*, Node*> > removeVisits(int count);
+	void reinsertVisits(std::vector<std::pair<Node*, Node*> > nodeIds);
 };
 
 } /* namespace tcbvrp */
