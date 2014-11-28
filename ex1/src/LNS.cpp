@@ -133,8 +133,6 @@ void LNS::reinsertPairs(std::vector<std::pair<Node*, Node*> > pairs, int curCost
 		{
 			bestSolution = *solution;
 			bestCosts = curCosts;
-
-			std::cout << bestCosts << ":" << bestSolution.getTotalCosts() << std::endl;
 		}
 	} else
 	{
