@@ -26,7 +26,10 @@ Graph::Graph() :
 
 Graph::~Graph()
 {
-
+	for (std::vector<Node*>::iterator it = nodes.begin(); it != nodes.end(); it++)
+	{
+		delete *it;
+	}
 }
 
 void Graph::addNode(Node* node)
