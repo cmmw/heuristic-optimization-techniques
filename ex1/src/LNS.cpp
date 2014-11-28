@@ -52,7 +52,6 @@ void LNS::solve()
 		reinsertPairs(pairs, solution->getTotalCosts());
 
 		*solution = bestSolution;
-		bestCosts = solution->getTotalCosts();
 		trials++;
 	}
 }
@@ -133,6 +132,9 @@ void LNS::reinsertPairs(std::vector<std::pair<Node*, Node*> > pairs, int curCost
 		if (curCosts < bestCosts)
 		{
 			bestSolution = *solution;
+			bestCosts = curCosts;
+
+			std::cout << bestCosts << ":" << bestSolution.getTotalCosts() << std::endl;
 		}
 	} else
 	{
