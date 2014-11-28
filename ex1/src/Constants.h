@@ -1,4 +1,4 @@
 const int START_REMOVES = 2;
-const int TRIALS_PER_COUNT = 10;
-const int REMOVE_LIMIT = 9;
-const double D = 5.0;
+const int TRIALS_PER_COUNT = 8;
+const int REMOVE_LIMIT = 7;
+const double D = 4.0;

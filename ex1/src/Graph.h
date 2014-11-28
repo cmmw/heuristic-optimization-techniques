@@ -51,11 +51,14 @@ public:
 
 	int getMaxCosts() const;
 
+	int getMinCosts() const;
+
 private:
 	Graph();
 	int globalTimeLimit;
 	int numberOfVehicles;
 	static int maxCosts;
+	static int minCosts;
 
 	std::vector<Node*> nodes;
 	std::vector<Node*> supplyNodes;

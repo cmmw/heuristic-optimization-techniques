@@ -32,6 +32,7 @@ void LNS::solve()
 	int removes = START_REMOVES;
 	int trials = 0;
 	std::vector<std::pair<Node*, Node*> > pairs;
+	VariableOrder varOrder(graph.getAdjacencyMatrix());
 
 	while (removes <= REMOVE_LIMIT && removes <= (graph.getNumberOfNodes() - 1) / 2)
 	{
@@ -43,6 +44,9 @@ void LNS::solve()
 
 		// Choose Pairs to remove
 		pairs = removeVisits(removes);
+
+		// Variable ordering
+		std::sort(pairs.begin(), pairs.end(), varOrder);
 
 		// Reinsert the pairs
 		reinsertPairs(pairs, solution->getTotalCosts());
@@ -76,16 +80,12 @@ std::vector<std::pair<Node*, Node*> > LNS::removeVisits(unsigned int count)
 		std::vector<std::pair<std::pair<int, int>, double> > lst = rankUsingRelatedness(removed[nodeIdx], tourIndex[nodeIdx]);
 		if (lst.size() == 0)
 			break;
-		double rnd1 = (double) rand() - 1;
-		rnd1 = (rnd1 == -1) ? 0 : rnd1;
-		double rnd2 = (rnd1 / (RAND_MAX));
-		int lstIdx = (lst.size() - 1) * pow(rnd2, D);
-
+		double rnd1 = ((double) (rand()) / (RAND_MAX));
+		int lstIdx = (lst.size() - 1) * (double) pow(rnd1, D);
 		tourIdx = lst[lstIdx].first.first;
 		nodeIdx = lst[lstIdx].first.second;
 
 		std::vector<Node*> &row = solution->getTours()[tourIdx];
-
 		Node* n1 = row[nodeIdx];
 		Node* n2 = row[nodeIdx + 1];
 		removed.push_back(std::pair<Node*, Node*>(n1, n2));
@@ -106,13 +106,14 @@ std::vector<std::pair<std::pair<int, int>, double> > LNS::rankUsingRelatedness(c
 			ret.push_back(std::pair<std::pair<int, int>, int>(std::pair<int, int>(tourIdx, nodeIdx), f));
 		}
 	}
-	std::sort(ret.begin(), ret.end(), sortNodes);
+	std::sort(ret.begin(), ret.end(), relatednessSort);
 	return ret;
 }
 
 double LNS::relatedness(const std::pair<Node*, Node*>& n1, int tourIdx1, const std::pair<Node*, Node*>& n2, int tourIdx2) const
 		{
 	double c = graph.getAdjacencyMatrix()[n2.first->getId()][n2.second->getId()] / (double) graph.getMaxCosts();
+
 	if (tourIdx1 == tourIdx2)
 	{
 		c += 1;
@@ -120,23 +121,18 @@ double LNS::relatedness(const std::pair<Node*, Node*>& n1, int tourIdx1, const s
 	return 1 / c;
 }
 
-bool LNS::sortNodes(const std::pair<std::pair<int, int>, int>& n1, const std::pair<std::pair<int, int>, int>& n2)
+bool LNS::relatednessSort(const std::pair<std::pair<int, int>, int>& n1, const std::pair<std::pair<int, int>, int>& n2)
 {
-	return n1.first < n2.first;
+	return n1.second < n2.second;
 }
 
 void LNS::reinsertPairs(std::vector<std::pair<Node*, Node*> > pairs, int curCosts)
 {
 	if (pairs.size() == 0)
 	{
-		std::cout << "***" << std::endl;
-		std::cout << curCosts << ":" << bestCosts << std::endl;
-		std::cout << solution->getTotalCosts() << ":" << bestSolution.getTotalCosts() << std::endl;
-		std::cout << "---" << std::endl;
 		if (curCosts < bestCosts)
 		{
 			bestSolution = *solution;
-			bestSolution.printSolution();
 		}
 	} else
 	{
@@ -146,18 +142,25 @@ void LNS::reinsertPairs(std::vector<std::pair<Node*, Node*> > pairs, int curCost
 		std::vector<std::pair<int, int> > positions = getPositionsForPair(currentPair);
 		for (std::vector<std::pair<int, int> >::iterator it = positions.begin(); it != positions.end(); it++)
 		{
-			bool violated = false;
+			bool skipSubtree = false;
 			int delta;
 			delta = insertAtPosition(currentPair, *it);
-			for (std::vector<std::vector<Node*> >::iterator tour = solution->getTours().begin(); tour != solution->getTours().end(); tour++)
+
+			if ((delta + curCosts + (graph.getMinCosts() * (int) pairs.size() * 2)) >= bestCosts)		//cheap lower bound heuristic
 			{
-				if (Algorithm::calcTourCosts(*tour, graph.getAdjacencyMatrix()) > graph.getGlobalTimeLimit())
+				skipSubtree = true;
+			} else
+			{
+				for (std::vector<std::vector<Node*> >::iterator tour = solution->getTours().begin(); tour != solution->getTours().end(); tour++)
 				{
-					violated = true;
-					break;
+					if (Algorithm::calcTourCosts(*tour, graph.getAdjacencyMatrix()) > graph.getGlobalTimeLimit())
+					{
+						skipSubtree = true;
+						break;
+					}
 				}
 			}
-			if (!violated)
+			if (!skipSubtree)
 				reinsertPairs(pairs, curCosts + delta);
 			removeAtPosition(*it);
 		}
@@ -231,4 +234,12 @@ std::vector<std::pair<int, int> > LNS::getPositionsForPair(std::pair<Node*, Node
 	return pairs;
 }
 
-} /* namespace tcbvrp */
+bool LNS::VariableOrder::operator()(const std::pair<Node*, Node*>& p1, const std::pair<Node*, Node*>& p2)
+{
+	if (matrix[p1.first->getId()][p1.second->getId()] < matrix[p2.first->getId()][p2.second->getId()])
+		return true;
+	return false;
+}
+
+}
+/* namespace tcbvrp */

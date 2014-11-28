@@ -5,6 +5,7 @@
  *      Author: ixi
  */
 
+#include <climits>
 #include <iostream>
 #include <sstream>
 #include <fstream>
@@ -15,6 +16,7 @@ namespace tcbvrp
 {
 
 int Graph::maxCosts = 0;
+int Graph::minCosts = INT_MAX;
 
 Graph::Graph() :
 		globalTimeLimit(-1), numberOfVehicles(-1), zeroNode(0)
@@ -143,10 +145,12 @@ Graph Graph::createGraph(std::string filename)
 
 				for (int i = 0; i < numNodes + 1; i++)
 				{
-					if (weight > maxCosts)
-						maxCosts = weight;
 					converter >> weight;
 					row.push_back(weight);
+					if (weight > maxCosts)
+						maxCosts = weight;
+					if (weight != 0 && weight < minCosts)
+						minCosts = weight;
 				}
 				adjacencyMatrix.push_back(row);
 
@@ -291,6 +295,11 @@ const Node* Graph::getZeroNode() const
 int Graph::getMaxCosts() const
 {
 	return this->maxCosts;
+}
+
+int Graph::getMinCosts() const
+{
+	return this->minCosts;
 }
 
 } /* namespace tcbvrp */

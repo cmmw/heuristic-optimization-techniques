@@ -1,3 +1,4 @@
+#include <ctime>
 #include <iostream>
 #include <sstream>
 #include <getopt.h>
@@ -65,12 +66,22 @@ int main(int argc, char* argv[])
 	ConstHeu cons(&sol, graph);
 	cons.solve();
 
-	LNS lns(&sol, graph);
-	lns.solve();
-
 	/*Print results*/
+	std::cout << "Initial solution" << std::endl;
 	sol.printSolution();
 	std::cout << sol.getNumberOfTours() << " tours created, allowed: " << graph.getNumberOfVehicles() << std::endl;
 
+	LNS lns(&sol, graph);
+	clock_t begin = clock();
+	lns.solve();
+	clock_t end = clock();
+
+	/*Print results*/
+	std::cout << std::endl << "VNS solution" << std::endl;
+	sol.printSolution();
+	std::cout << sol.getNumberOfTours() << " tours created, allowed: " << graph.getNumberOfVehicles() << std::endl;
+
+	double ms = double(end - begin) / CLOCKS_PER_SEC;
+	std::cout << "Took " << ms << " ms" << std::endl;
 	return 0;
 }
