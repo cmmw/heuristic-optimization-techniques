@@ -82,6 +82,6 @@ int main(int argc, char* argv[])
 	std::cout << sol.getNumberOfTours() << " tours created, allowed: " << graph.getNumberOfVehicles() << std::endl;
 
 	double ms = double(end - begin) / CLOCKS_PER_SEC;
-	std::cout << "Took " << ms << " ms" << std::endl;
+	std::cout << "Took " << ms << " seconds" << std::endl;
 	return 0;
 }
