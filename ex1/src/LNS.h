@@ -66,6 +66,7 @@ private:
 
 	Solution bestSolution;
 	int bestCosts;
+	bool foundBetter;
 };
 
 } /* namespace tcbvrp */

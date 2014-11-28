@@ -18,7 +18,7 @@ namespace tcbvrp
 {
 
 LNS::LNS(Solution* solution, const Graph& graph) :
-		Algorithm(solution, graph), bestSolution(*solution), bestCosts(solution->getTotalCosts())
+		Algorithm(solution, graph), bestSolution(*solution), bestCosts(solution->getTotalCosts()), foundBetter(false)
 {
 	srand(time(NULL));
 }
@@ -54,6 +54,11 @@ void LNS::solve()
 
 		*solution = bestSolution;
 		trials++;
+		if (foundBetter)
+		{
+			foundBetter = false;
+			trials = 0;
+		}
 	}
 }
 
@@ -132,6 +137,7 @@ void LNS::reinsertPairs(std::vector<std::pair<Node*, Node*> > pairs, int curCost
 	{
 		if (curCosts < bestCosts)
 		{
+			foundBetter = true;
 			bestSolution = *solution;
 			bestCosts = curCosts;
 		}
@@ -168,6 +174,10 @@ void LNS::reinsertPairs(std::vector<std::pair<Node*, Node*> > pairs, int curCost
 			}
 			if (!skipSubtree)
 				reinsertPairs(pairs, curCosts + delta);
+
+			if (foundBetter)
+				return;
+
 			removeAtPosition(*it);
 		}
 	}
