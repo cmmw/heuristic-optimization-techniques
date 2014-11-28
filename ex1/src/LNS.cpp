@@ -140,6 +140,11 @@ void LNS::reinsertPairs(std::vector<std::pair<Node*, Node*> > pairs, int curCost
 		pairs.pop_back();
 
 		std::vector<std::pair<int, int> > positions = getPositionsForPair(currentPair);
+
+		//Value ordering
+		//LNS::ValueOrder valOrder(solution->getTours(), graph.getAdjacencyMatrix());
+		//std::sort(positions.begin(), positions.end(), valOrder);
+
 		for (std::vector<std::pair<int, int> >::iterator it = positions.begin(); it != positions.end(); it++)
 		{
 			bool skipSubtree = false;
@@ -237,6 +242,42 @@ std::vector<std::pair<int, int> > LNS::getPositionsForPair(std::pair<Node*, Node
 bool LNS::VariableOrder::operator()(const std::pair<Node*, Node*>& p1, const std::pair<Node*, Node*>& p2)
 {
 	if (matrix[p1.first->getId()][p1.second->getId()] < matrix[p2.first->getId()][p2.second->getId()])
+		return true;
+	return false;
+}
+
+bool LNS::ValueOrder::operator()(const std::pair<int, int>& p1, const std::pair<int, int>& p2)
+{
+	Node zeroNode(Node::ZERO, 0);
+
+	const std::vector<Node*>& tour1 = tours[p1.first];
+	const std::vector<Node*>& tour2 = tours[p2.first];
+	Node* n11;
+	Node* n12;
+	Node* n21;
+	Node* n22;
+
+	if (p1.second == 0)
+		n11 = &zeroNode;
+	else
+		n11 = tour1[p1.second - 1];
+
+	if (p1.second == (int) tour1.size())
+		n12 = &zeroNode;
+	else
+		n12 = tour1[p1.second];
+
+	if (p2.second == 0)
+		n21 = &zeroNode;
+	else
+		n21 = tour2[p2.second - 1];
+
+	if (p2.second == (int) tour2.size())
+		n22 = &zeroNode;
+	else
+		n22 = tour2[p2.second];
+
+	if (matrix[n11->getId()][n12->getId()] > matrix[n21->getId()][n22->getId()])
 		return true;
 	return false;
 }
