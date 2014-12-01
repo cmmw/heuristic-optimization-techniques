@@ -18,7 +18,7 @@ namespace tcbvrp
 {
 
 LNS::LNS(Solution* solution, const Graph& graph) :
-		Algorithm(solution, graph), bestSolution(*solution), bestCosts(solution->getTotalCosts()), foundBetter(false)
+		Algorithm(solution, graph), bestSolution(*solution), bestCosts(INT_MAX), foundBetter(false)
 {
 	srand(time(NULL));
 }
@@ -149,8 +149,8 @@ void LNS::reinsertPairs(std::vector<std::pair<Node*, Node*> > pairs, int curCost
 		std::vector<std::pair<int, int> > positions = getPositionsForPair(currentPair);
 
 		//Value ordering
-		//LNS::ValueOrder valOrder(solution->getTours(), graph.getAdjacencyMatrix());
-		//std::sort(positions.begin(), positions.end(), valOrder);
+//		LNS::ValueOrder valOrder(solution->getTours(), graph.getAdjacencyMatrix());
+//		std::sort(positions.begin(), positions.end(), valOrder);
 
 		for (std::vector<std::pair<int, int> >::iterator it = positions.begin(); it != positions.end(); it++)
 		{
@@ -158,7 +158,7 @@ void LNS::reinsertPairs(std::vector<std::pair<Node*, Node*> > pairs, int curCost
 			int delta;
 			delta = insertAtPosition(currentPair, *it);
 
-			if ((delta + curCosts + (graph.getMinCosts() * (int) pairs.size() * 2)) >= bestCosts)		//cheap lower bound heuristic
+			if ((delta + curCosts + (graph.getMinCosts() * (int) pairs.size() * 3) - (graph.getMaxCosts() * (int) pairs.size())) >= bestCosts)		//cheap lower bound heuristic
 			{
 				skipSubtree = true;
 			} else
