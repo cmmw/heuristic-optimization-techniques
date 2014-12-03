@@ -76,13 +76,12 @@ std::vector<std::pair<Node*, Node*> > LNS::removeVisits(unsigned int count)
 	} while (tours[tourIdx].size() == 0);
 	nodeIdx = random(tours[tourIdx].size() - 1);
 	removed.push_back(std::pair<Node*, Node*>(tours[tourIdx][nodeIdx], tours[tourIdx][nodeIdx + 1]));
-	tourIndex.push_back(tourIdx);
 	removeAtPosition(std::pair<int, int>(tourIdx, nodeIdx));
 
 	while (removed.size() < count)
 	{
 		nodeIdx = random(removed.size());
-		std::vector<std::pair<std::pair<int, int>, double> > lst = rankUsingRelatedness(removed[nodeIdx], tourIndex[nodeIdx]);
+		std::vector<std::pair<std::pair<int, int>, double> > lst = rankUsingRelatedness(removed[nodeIdx], tourIdx);
 		if (lst.size() == 0)
 			break;
 		double rnd1 = ((double) (rand()) / (RAND_MAX));
