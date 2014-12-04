@@ -17,7 +17,6 @@ NodeCompare::NodeCompare(const std::vector<int>& weights) :
 
 NodeCompare::~NodeCompare()
 {
-	// TODO Auto-generated destructor stub
 }
 
 bool NodeCompare::operator()(const Node* n1, const Node* n2)

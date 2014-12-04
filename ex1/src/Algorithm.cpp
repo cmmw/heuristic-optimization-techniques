@@ -15,18 +15,16 @@ namespace tcbvrp
 Algorithm::Algorithm(Solution* solution, const Graph& graph) :
 		solution(solution), graph(graph)
 {
-	// TODO Auto-generated constructor stub
 }
 
 Algorithm::~Algorithm()
 {
-	// TODO Auto-generated destructor stub
 }
 
 unsigned int Algorithm::calcTourCosts(const std::vector<Node*> &tour, const std::vector<std::vector<int> >& matrix)
 {
 	int costs = 0;
-	if(tour.empty())
+	if (tour.empty())
 		return costs;
 	costs += matrix[0][(*tour.begin())->getId()];
 	for (std::vector<Node*>::const_iterator it1 = tour.begin(), it2 = it1 + 1; it2 != tour.end(); it1++, it2++)
@@ -44,6 +42,11 @@ void Algorithm::sortNeighborsByAscEdgeCosts(std::vector<Node*> &nodes, const std
 {
 	NodeCompare comp(costRow);
 	std::sort(nodes.begin(), nodes.end(), comp);
+}
+
+unsigned int Algorithm::random(unsigned int max)
+{
+	return rand() % (max + 1);
 }
 
 } /* namespace tcbvrp */

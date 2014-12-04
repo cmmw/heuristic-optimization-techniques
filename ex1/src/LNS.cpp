@@ -5,7 +5,6 @@
  *      Author: ixi
  */
 
-#include <cstdlib>
 #include <cmath>
 #include <algorithm>
 #include <iostream>
@@ -20,7 +19,6 @@ namespace tcbvrp
 LNS::LNS(Solution* solution, const Graph& graph) :
 		Algorithm(solution, graph), bestSolution(*solution), bestCosts(INT_MAX), foundBetter(false)
 {
-	srand(time(NULL));
 }
 
 LNS::~LNS()
@@ -49,11 +47,13 @@ void LNS::solve()
 	if (feasible)
 		bestCosts = solution->getTotalCosts();
 
+	std::cout << std::endl << "removes " << removes << ":" << std::endl << "Solution: ";
 	while (removes <= REMOVE_LIMIT && removes <= (int) graph.getDemandNodes().size())
 	{
 		if (trials == TRIALS_PER_COUNT)
 		{
 			removes++;
+			std::cout << std::endl << "removes " << removes << ":" << std::endl << "Solution: ";
 			trials = 0;
 		}
 
@@ -72,8 +72,18 @@ void LNS::solve()
 		{
 			foundBetter = false;
 			trials = 0;
+			//Try to find good solutions earlier (re-search in small search tree until we don't find any better solution), TODO useful?
+			if (removes <= 5 && removes != START_REMOVES)
+			{
+				removes = START_REMOVES;
+				std::cout << std::endl << "removes " << removes << ":" << std::endl << "Solution: ";
+			}
 		}
 	}
+
+	//No feasible solution found
+	if (bestCosts == INT_MAX)
+		solution->clear();
 }
 
 std::vector<std::pair<Node*, Node*> > LNS::removeVisits(unsigned int count)
@@ -86,15 +96,15 @@ std::vector<std::pair<Node*, Node*> > LNS::removeVisits(unsigned int count)
 	/*TODO this should be done more efficient*/
 	do
 	{
-		tourIdx = random(solution->getNumberOfTours());
+		tourIdx = Algorithm::random(solution->getNumberOfTours() - 1);
 	} while (tours[tourIdx].size() == 0);
-	nodeIdx = random(tours[tourIdx].size() - 1);
+	nodeIdx = Algorithm::random(tours[tourIdx].size() - 2);		//-2 because we only address the first node of the pairs
 	removed.push_back(std::pair<Node*, Node*>(tours[tourIdx][nodeIdx], tours[tourIdx][nodeIdx + 1]));
 	removeAtPosition(std::pair<int, int>(tourIdx, nodeIdx));
 
 	while (removed.size() < count)
 	{
-		nodeIdx = random(removed.size());
+		nodeIdx = Algorithm::random(removed.size() - 1);
 		std::vector<std::pair<std::pair<int, int>, double> > lst = rankUsingRelatedness(removed[nodeIdx], tourIdx);
 		if (lst.size() == 0)
 			break;
@@ -153,6 +163,8 @@ void LNS::reinsertPairs(std::vector<std::pair<Node*, Node*> > pairs, int curCost
 			foundBetter = true;
 			bestSolution = *solution;
 			bestCosts = curCosts;
+			std::cout << bestCosts << ", ";
+			std::cout.flush();
 		}
 	} else
 	{
@@ -226,11 +238,6 @@ void LNS::removeAtPosition(std::pair<int, int> position)
 {
 	std::vector<Node*>& tour = solution->getTours()[position.first];
 	tour.erase(tour.begin() + position.second, tour.begin() + position.second + 2);
-}
-
-unsigned int LNS::random(unsigned int max)
-{
-	return rand() % max;
 }
 
 std::vector<std::pair<int, int> > LNS::getPositionsForPair(std::pair<Node*, Node*> pair)

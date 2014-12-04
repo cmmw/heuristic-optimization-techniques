@@ -7,21 +7,23 @@
 
 #include <iostream>
 #include <list>
-#include "ConstHeu.h"
+#include <cstdlib>
+#include "RandConstHeu.h"
+#include "Constants.h"
 
 namespace tcbvrp
 {
 
-ConstHeu::ConstHeu(Solution* solution, const Graph& graph) :
+RandConstHeu::RandConstHeu(Solution* solution, const Graph& graph) :
 		Algorithm(solution, graph)
 {
 }
 
-ConstHeu::~ConstHeu()
+RandConstHeu::~RandConstHeu()
 {
 }
 
-void ConstHeu::solve()
+void RandConstHeu::solve()
 {
 	const std::vector<Node*> &supplyNodes = graph.getSupplyNodes();
 	const std::vector<Node*> &demandNodes = graph.getDemandNodes();
@@ -63,23 +65,38 @@ void ConstHeu::solve()
 		unsigned int curCosts = graph.getAdjacencyMatrix()[0][tmpNode->getId()];		//cost from 0 to tmpNode
 		while (true)
 		{
-			//take cheapest unvisited node within the neighbors of tmpNode
-			Node* cheapest = NULL;
+			//CL = list of unvisited nodes
+			std::vector<Node*> CL;
+			int cmin = INT_MAX, cmax = 0;
 			for (std::vector<Node*>::iterator iit = bestNeighbors[tmpNode->getId()].begin(); iit != bestNeighbors[tmpNode->getId()].end(); iit++)
 			{
 				if (!(*iit)->getVisited())
 				{
-					cheapest = (*iit);
-					break;
+					CL.push_back((*iit));
+					int c = graph.getAdjacencyMatrix()[tmpNode->getId()][(*iit)->getId()];
+					if (c < cmin)
+						cmin = c;
+					if (c > cmax)
+						cmax = c;
 				}
 			}
 
 			//There are no unvisited nodes left
-			if (cheapest == NULL)
+			if (CL.empty())
 				break;
 
 			Node* prvNode = tmpNode;
-			tmpNode = cheapest;
+
+			//create RCL from CL
+			std::vector<Node*> RCL;
+			for (std::vector<Node*>::iterator n = CL.begin(); n != CL.end(); n++)
+			{
+				if (graph.getAdjacencyMatrix()[tmpNode->getId()][(*n)->getId()] <= cmin + ALPHA * (cmax - cmin))
+					RCL.push_back(*n);
+			}
+
+			//random selection from RCL
+			tmpNode = RCL[Algorithm::random(RCL.size() - 1)];
 
 			//check if time to visit tmpNode + time to visit 0 node is below the time limit
 			if (curCosts + matrix[prvNode->getId()][tmpNode->getId()] + matrix[tmpNode->getId()][0] <= graph.getGlobalTimeLimit() || solution->getNumberOfTours() == graph.getNumberOfVehicles() - 1)

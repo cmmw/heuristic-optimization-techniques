@@ -53,6 +53,8 @@ public:
 
 	int getMinCosts() const;
 
+	void unvisitNodes() const;
+
 private:
 	Graph();
 	int globalTimeLimit;

@@ -305,4 +305,10 @@ int Graph::getMinCosts() const
 	return this->minCosts;
 }
 
+void Graph::unvisitNodes() const
+{
+	for (std::vector<Node*>::const_iterator it = nodes.begin(); it != nodes.end(); it++)
+		(*it)->setVisited(false);
+}
+
 } /* namespace tcbvrp */
