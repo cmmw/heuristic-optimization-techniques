@@ -48,6 +48,10 @@ void ConstHeu::solve()
 		Algorithm::sortNeighborsByAscEdgeCosts(bestNeighbors[supplyNodes[i]->getId()], graph.getAdjacencyMatrix()[supplyNodes[i]->getId()]);
 	}
 
+	//Sort neighbors (supply nodes) for node 0
+	bestNeighbors[0] = supplyNodes;
+	Algorithm::sortNeighborsByAscEdgeCosts(bestNeighbors[0], graph.getAdjacencyMatrix()[0]);
+
 	/***/
 	//Print list of neighbours with costs
 	for (int i = 0; i < graph.getNumberOfNodes(); i++)
@@ -71,7 +75,7 @@ void ConstHeu::solve()
 
 	/*Tour construction starts here*/
 	const std::vector<std::vector<int> > &matrix = graph.getAdjacencyMatrix();
-	for (std::vector<Node*>::const_iterator it = supplyNodes.begin(); it != supplyNodes.end(); it++)
+	for (std::vector<Node*>::const_iterator it = bestNeighbors[0].begin(); it != bestNeighbors[0].end(); it++)
 	{
 		Node* tmpNode = (*it);
 		if (tmpNode->getVisited())			//if this supply node is already visited go to the next one
