@@ -35,13 +35,14 @@ void GRASP::solve()
 		LNS lns(&initSol, graph, bestCosts);
 		lns.solve();
 		curCosts = initSol.getTotalCosts();
-		if ((curCosts != 0 && curCosts < solution->getTotalCosts()) || solution->getTotalCosts() == 0)
+		if ((curCosts != 0 && curCosts < bestCosts) || bestCosts == INT_MAX)
 		{
 			*solution = initSol;
 			bestCosts = solution->getTotalCosts();
 			i = -1;
-			std::cout << std::endl << "********* Grasp: " << solution->getTotalCosts() << std::endl;
+			std::cout << std::endl << "********* Grasp: " << solution->getTotalCosts();
 		}
+		std::cout << std::endl << "---" << std::endl;
 		i++;
 	}
 }
