@@ -16,8 +16,8 @@
 namespace tcbvrp
 {
 
-LNS::LNS(Solution* solution, const Graph& graph) :
-		Algorithm(solution, graph), bestSolution(*solution), bestCosts(INT_MAX), foundBetter(false)
+LNS::LNS(Solution* solution, const Graph& graph, int bestCosts) :
+		Algorithm(solution, graph), bestSolution(*solution), bestCosts(bestCosts), foundBetter(false)
 {
 }
 
@@ -44,19 +44,12 @@ void LNS::solve()
 		}
 	}
 
-	if (feasible)
+	if (feasible && bestCosts == INT_MAX)
 		bestCosts = solution->getTotalCosts();
 
 	std::cout << std::endl << "removes " << removes << ":" << std::endl << "Solution: ";
 	while (removes <= REMOVE_LIMIT && removes <= (int) graph.getDemandNodes().size())
 	{
-		if (trials == TRIALS_PER_COUNT)
-		{
-			removes++;
-			std::cout << std::endl << "removes " << removes << ":" << std::endl << "Solution: ";
-			trials = 0;
-		}
-
 		// Choose Pairs to remove
 		pairs = removeVisits(removes);
 
@@ -72,12 +65,20 @@ void LNS::solve()
 		{
 			foundBetter = false;
 			trials = 0;
+
 			//Try to find good solutions earlier (re-search in small search tree until we don't find any better solution), TODO useful?
 			if (removes <= 5 && removes != START_REMOVES)
 			{
 				removes = START_REMOVES;
 				std::cout << std::endl << "removes " << removes << ":" << std::endl << "Solution: ";
 			}
+		}
+
+		if (trials == TRIALS_PER_COUNT)
+		{
+			removes++;
+			std::cout << std::endl << "removes " << removes << ":" << std::endl << "Solution: ";
+			trials = 0;
 		}
 	}
 

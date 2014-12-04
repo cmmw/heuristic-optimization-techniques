@@ -24,17 +24,21 @@ GRASP::~GRASP()
 
 void GRASP::solve()
 {
+	int curCosts;
+	int bestCosts = INT_MAX;
 	int i = 0;
 	while (i < 5)		//TODO stopping criteria: stop if we don't find a better solution after 5 tries
 	{
 		Solution initSol(graph.getAdjacencyMatrix());
 		RandConstHeu rConst(&initSol, graph);
 		rConst.solve();
-		LNS lns(&initSol, graph);
+		LNS lns(&initSol, graph, bestCosts);
 		lns.solve();
-		if (initSol.getTotalCosts() < solution->getTotalCosts() || solution->getTotalCosts() == 0)
+		curCosts = initSol.getTotalCosts();
+		if ((curCosts != 0 && curCosts < solution->getTotalCosts()) || solution->getTotalCosts() == 0)
 		{
 			*solution = initSol;
+			bestCosts = solution->getTotalCosts();
 			i = -1;
 			std::cout << std::endl << "********* Grasp: " << solution->getTotalCosts() << std::endl;
 		}
