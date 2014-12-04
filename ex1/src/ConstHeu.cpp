@@ -89,6 +89,7 @@ void ConstHeu::solve()
 				if (!(*iit)->getVisited())
 				{
 					cheapest = (*iit);
+					break;
 				}
 			}
 
