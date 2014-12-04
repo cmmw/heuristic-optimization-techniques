@@ -49,7 +49,7 @@ void LNS::solve()
 	if (feasible)
 		bestCosts = solution->getTotalCosts();
 
-	while (removes <= REMOVE_LIMIT && removes <= (graph.getNumberOfNodes() - 1) / 2)
+	while (removes <= REMOVE_LIMIT && removes <= (int) graph.getDemandNodes().size())
 	{
 		if (trials == TRIALS_PER_COUNT)
 		{
