@@ -28,6 +28,7 @@ public:
 	void printSolution() const;
 	void printOfficialSolution() const;
 	int getTotalCosts() const;
+	void cleanEmptyTours();
 
 private:
 	std::vector<std::vector<Node*> > tours;

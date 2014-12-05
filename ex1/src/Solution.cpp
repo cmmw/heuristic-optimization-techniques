@@ -47,6 +47,16 @@ int Solution::getNumberOfTours() const
 	return this->tours.size();
 }
 
+void Solution::cleanEmptyTours()
+{
+	for (std::vector<std::vector<Node*> >::iterator tour = tours.begin(); tour != tours.end(); tour++) {
+		if (tour->size() == 0) {
+			tour = tours.erase(tour);
+		}
+	}
+}
+
+
 void Solution::printSolution() const
 {
 	LOG << "";
