@@ -161,7 +161,7 @@ int main(int argc, char* argv[])
 	LOG << "Set START_REMOVES to " << START_REMOVES;
 	LOG << "Set TRIALS_PER_COUNT to " << TRIALS_PER_COUNT;
 	LOG << "Set REMOVE_LIMIT to " << REMOVE_LIMIT;
-	LOG << "Set D to ";
+	LOG << "Set D to " << D;
 	LOG << "Set ALPHA to " << ALPHA;
 	LOG << "Set GRASP_TRIALS to " << GRASP_TRIALS;
 
