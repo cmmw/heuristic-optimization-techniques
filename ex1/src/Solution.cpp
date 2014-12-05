@@ -74,7 +74,6 @@ void Solution::printSolution() const
 
 void Solution::printOfficialSolution() const
 {
-
 	int c = 0;
 	int totalCosts = 0;
 	for (std::vector<std::vector<Node*> >::const_iterator tour = tours.begin(); tour != tours.end(); tour++)

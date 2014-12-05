@@ -22,11 +22,13 @@ int REMOVE_LIMIT = 5;
 double D = 3.0;
 double ALPHA = 0.43;
 int GRASP_TRIALS = 5;
+bool quit = false;
 
 void runConstHeu(Solution* sol, const Graph& graph);
 void runRandConstHeu(Solution* sol, const Graph& graph);
 void runLNS(Solution* sol, const Graph& graph);
 void runGRASP(Solution* sol, const Graph& graph);
+void signalHandler(int signum);
 
 int main(int argc, char* argv[])
 {
@@ -35,7 +37,7 @@ int main(int argc, char* argv[])
 	{
 		std::cout << "Usage: " << argv[0] << " " << "--instanceFile <file>"
 				<< "[ --startRemoves <val> --trials <val> --removeLimit <val> --relatedness <val>"
-				<< "--greediness <val> --LNS --graspTrials <val> ]"<< std::endl;
+				<< "--greediness <val> --LNS --graspTrials <val> ]" << std::endl;
 		return -1;
 	}
 
@@ -162,6 +164,8 @@ int main(int argc, char* argv[])
 	LOG << "Set ALPHA to " << ALPHA;
 	LOG << "Set GRASP_TRIALS to " << GRASP_TRIALS;
 
+	signal(SIGINT, signalHandler);
+
 	Graph graph = Graph::createGraph(instanceFile);
 	//graph.printGraph();
 
@@ -219,4 +223,9 @@ void runGRASP(Solution* sol, const Graph& graph)
 	LOG << "Running GRASP";
 	GRASP grasp(sol, graph);
 	grasp.solve();
+}
+
+void signalHandler(int signum)
+{
+	quit = true;
 }

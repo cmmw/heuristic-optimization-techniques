@@ -14,6 +14,8 @@
 #include "Constants.h"
 #include "Logger.h"
 
+extern bool quit;
+
 namespace tcbvrp
 {
 
@@ -44,7 +46,7 @@ void LNS::solve()
 	LOG << "";
 	LOG << "removes " << removes << ":";
 	LOG_NOEND << "Solution: ";
-	while (removes <= REMOVE_LIMIT && removes <= (int) graph.getDemandNodes().size())
+	while (removes <= REMOVE_LIMIT && removes <= (int) graph.getDemandNodes().size() && !quit)
 	{
 		// Choose Pairs to remove
 		pairs = removeVisits(removes);
@@ -177,7 +179,7 @@ void LNS::reinsertPairs(std::vector<std::pair<Node*, Node*> > pairs, int curCost
 //		LNS::ValueOrder valOrder(solution->getTours(), graph.getAdjacencyMatrix());
 //		std::sort(positions.begin(), positions.end(), valOrder);
 
-		for (std::vector<std::pair<int, int> >::iterator it = positions.begin(); it != positions.end(); it++)
+		for (std::vector<std::pair<int, int> >::iterator it = positions.begin(); it != positions.end() && !quit; it++)
 		{
 			bool skipSubtree = false;
 			int delta;

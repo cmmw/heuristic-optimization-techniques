@@ -14,6 +14,8 @@
 #include "Constants.h"
 #include "Logger.h"
 
+extern bool quit;
+
 namespace tcbvrp
 {
 
@@ -31,7 +33,7 @@ void GRASP::solve()
 	int curCosts;
 	int bestCosts = INT_MAX;
 	int i = 0;
-	while (i < GRASP_TRIALS)		//TODO stopping criteria: stop if we don't find a better solution after GRASP_TRIALS tries
+	while (i < GRASP_TRIALS && !quit)		//TODO stopping criteria: stop if we don't find a better solution after GRASP_TRIALS tries
 	{
 		Solution initSol(graph.getAdjacencyMatrix());
 		RandConstHeu rConst(&initSol, graph);
