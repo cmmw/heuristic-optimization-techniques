@@ -18,8 +18,7 @@ namespace tcbvrp
 class LNS: public Algorithm
 {
 public:
-	//bestCosts are the costs of the best known solution, used as upper bound (useful for grasp)
-	LNS(Solution* solution, const Graph& graph, int bestCosts = INT_MAX);
+	LNS(Solution* solution, const Graph& graph);
 	virtual ~LNS();
 
 	void solve();

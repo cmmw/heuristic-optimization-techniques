@@ -32,7 +32,7 @@ void GRASP::solve()
 		Solution initSol(graph.getAdjacencyMatrix());
 		RandConstHeu rConst(&initSol, graph);
 		rConst.solve();
-		LNS lns(&initSol, graph, bestCosts);
+		LNS lns(&initSol, graph);
 		lns.solve();
 		curCosts = initSol.getTotalCosts();
 		if ((curCosts != 0 && curCosts < bestCosts) || bestCosts == INT_MAX)

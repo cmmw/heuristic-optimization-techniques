@@ -16,8 +16,8 @@
 namespace tcbvrp
 {
 
-LNS::LNS(Solution* solution, const Graph& graph, int bestCosts) :
-		Algorithm(solution, graph), bestSolution(*solution), bestCosts(bestCosts), foundBetter(false)
+LNS::LNS(Solution* solution, const Graph& graph) :
+		Algorithm(solution, graph), bestSolution(*solution), bestCosts(INT_MAX), foundBetter(false)
 {
 }
 
@@ -44,7 +44,7 @@ void LNS::solve()
 		}
 	}
 
-	if (feasible && bestCosts == INT_MAX)
+	if (feasible)
 		bestCosts = solution->getTotalCosts();
 
 	std::cout << std::endl << "removes " << removes << ":" << std::endl << "Solution: ";
