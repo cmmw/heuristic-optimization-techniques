@@ -6,6 +6,8 @@
  */
 
 #include <iostream>
+#include <climits>
+
 #include "GRASP.h"
 #include "LNS.h"
 #include "RandConstHeu.h"

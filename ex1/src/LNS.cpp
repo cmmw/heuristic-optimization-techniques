@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <iostream>
 #include <ctime>
+#include <climits>
 
 #include "LNS.h"
 #include "Constants.h"

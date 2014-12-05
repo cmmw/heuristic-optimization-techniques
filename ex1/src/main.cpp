@@ -30,9 +30,11 @@ void runGRASP(Solution* sol, const Graph& graph);
 int main(int argc, char* argv[])
 {
 	srand(time(NULL));
-	if (argc < 3)
+	if (argc < 3 || argc > 16)
 	{
-		std::cout << "Usage: " << argv[0] << " " << "--instanceFile [instanceFile]" << std::endl;
+		std::cout << "Usage: " << argv[0] << " " << "--instanceFile <file>"
+				<< "[ --startRemoves <val> --trials <val> --removeLimit <val> --relatedness <val>"
+				<< "--greediness <val> --LNS --graspTrials <val> ]"<< std::endl;
 		return -1;
 	}
 

@@ -8,6 +8,8 @@
 #include <iostream>
 #include <list>
 #include <cstdlib>
+#include <climits>
+
 #include "RandConstHeu.h"
 #include "Constants.h"
 
