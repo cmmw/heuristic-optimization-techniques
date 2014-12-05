@@ -67,8 +67,7 @@ void LNS::solve()
 			foundBetter = false;
 			trials = 0;
 
-			//Try to find good solutions earlier (re-search in small search tree until we don't find any better solution), TODO useful?
-			if (removes <= 5 && removes != START_REMOVES)
+			if (removes != START_REMOVES)
 			{
 				removes = START_REMOVES;
 				std::cout << std::endl << "removes " << removes << ":" << std::endl << "Solution: ";
