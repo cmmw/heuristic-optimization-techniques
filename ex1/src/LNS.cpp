@@ -36,14 +36,15 @@ void LNS::solve()
 
 	// check if initial solution is feasible and set bestCosts if so
 	bool feasible = true;
-	for (std::vector<std::vector<Node*> >::iterator tour = solution->getTours().begin(); tour != solution->getTours().end(); tour++)
-	{
-		if (Algorithm::calcTourCosts(*tour, graph.getAdjacencyMatrix()) > graph.getGlobalTimeLimit())
+	// only the last one has to be checked, the others will be correct anyway right?
+	//for (std::vector<std::vector<Node*> >::iterator tour = solution->getTours().begin(); tour != solution->getTours().end(); tour++)
+	//{
+		if (Algorithm::calcTourCosts(solution->getTours().end()*, graph.getAdjacencyMatrix()) > graph.getGlobalTimeLimit())
 		{
 			feasible = false;
 			break;
 		}
-	}
+	//}
 
 	if (feasible)
 		bestCosts = solution->getTotalCosts();
