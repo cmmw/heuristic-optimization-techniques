@@ -49,11 +49,19 @@ int Solution::getNumberOfTours() const
 
 void Solution::cleanEmptyTours()
 {
-	for (std::vector<std::vector<Node*> >::iterator tour = tours.begin(); tour != tours.end(); tour++) {
-		if (tour->size() == 0) {
+	std::vector<std::vector<Node*> >::iterator tour = tours.begin();
+	while (tour != tours.end()) {
+		if (tour->empty()) {
 			tour = tours.erase(tour);
 		}
+		else {
+			tour++;
+		}
 	}
+
+	/*if (tours.back().size() == 0) {
+		tours.pop_back();
+	}*/
 }
 
 

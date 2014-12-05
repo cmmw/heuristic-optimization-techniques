@@ -182,7 +182,20 @@ void LNS::reinsertPairs(std::vector<std::pair<Node*, Node*> > pairs, int curCost
 		for (std::vector<std::pair<int, int> >::iterator it = positions.begin(); it != positions.end() && !quit; it++)
 		{
 			bool skipSubtree = false;
+			bool addTour = false;
 			int delta;
+
+
+			// -1 marks the special position to create a new empty tour
+			if (it->first == -1) {
+				std::vector<Node*> tour;
+				solution->addTour(tour);
+
+				it->first = solution->getNumberOfTours()-1;
+				addTour = true;
+			}
+
+
 			delta = insertAtPosition(currentPair, *it);
 
 			if ((delta + curCosts + (graph.getMinCosts() * (int) pairs.size() * 3) - (graph.getMaxCosts() * (int) pairs.size())) >= bestCosts)		//cheap lower bound heuristic
@@ -218,6 +231,10 @@ void LNS::reinsertPairs(std::vector<std::pair<Node*, Node*> > pairs, int curCost
 				return;
 
 			removeAtPosition(*it);
+			// if tour was added delete empty tour again
+			if (addTour) {
+				solution->cleanEmptyTours();
+			}
 		}
 	}
 }
@@ -279,6 +296,11 @@ std::vector<std::pair<int, int> > LNS::getPositionsForPair(std::pair<Node*, Node
 		{
 			pairs.push_back(std::make_pair(tour_number, position));
 		}
+	}
+
+	// if type S->D add a special position -1, 0 to generate new tour
+	if (type && (int) solution->getTours().size() < graph.getNumberOfVehicles()) {
+		pairs.push_back(std::make_pair(-1, 0));
 	}
 
 	return pairs;
