@@ -194,7 +194,7 @@ void LNS::reinsertPairs(std::vector<std::pair<Node*, Node*> > pairs, int curCost
 				for (std::vector<std::vector<Node*> >::iterator tour = solution->getTours().begin(); tour != solution->getTours().end(); tour++)
 				{
 					int ccur = Algorithm::calcTourCosts(*tour, graph.getAdjacencyMatrix());
-					if (ccur > graph.getGlobalTimeLimit())
+					if (ccur > (int) graph.getGlobalTimeLimit())
 					{
 						skipSubtree = true;
 						break;
@@ -205,7 +205,7 @@ void LNS::reinsertPairs(std::vector<std::pair<Node*, Node*> > pairs, int curCost
 				if (!skipSubtree)
 				{
 					cfree += (graph.getNumberOfVehicles() - solution->getNumberOfTours()) * graph.getGlobalTimeLimit();
-					if (cfree < pairs.size() * ((3 * graph.getMinCosts()) - graph.getMaxCosts()))
+					if (cfree < (int) pairs.size() * ((3 * graph.getMinCosts()) - graph.getMaxCosts()))
 					{
 						skipSubtree = true;
 					}
