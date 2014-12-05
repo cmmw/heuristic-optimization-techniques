@@ -5,6 +5,7 @@
 #include <cstdio>
 #include <string>
 #include <cstdlib>
+#include <csignal>
 
 #include "Graph.h"
 #include "ConstHeu.h"
