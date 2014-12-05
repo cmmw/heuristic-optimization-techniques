@@ -11,6 +11,7 @@
 #include <fstream>
 #include <stdexcept>
 #include "Graph.h"
+#include "Logger.h"
 
 namespace tcbvrp
 {
@@ -182,25 +183,25 @@ void Graph::printGraph()
 
 	if (printTextDescription)
 	{
-		std::cout << "Number of nodes: " << std::endl;
+		LOG << "Number of nodes: ";
 	}
-	std::cout << numNodes << std::endl;
+	LOG << numNodes;
 
 	if (printTextDescription)
 	{
-		std::cout << "Global time limit: " << std::endl;
+		LOG << "Global time limit: ";
 	}
-	std::cout << getGlobalTimeLimit() << std::endl;
+	LOG << getGlobalTimeLimit();
 
 	if (printTextDescription)
 	{
-		std::cout << "Number of vehicles: ";
+		LOG << "Number of vehicles: ";
 	}
-	std::cout << getNumberOfVehicles() << std::endl;
+	LOG << getNumberOfVehicles();
 
 	if (printTextDescription)
 	{
-		std::cout << "Nodes: " << std::endl;
+		LOG << "Nodes: ";
 	}
 
 	for (int i = 0; i < numNodes; i++)
@@ -224,21 +225,21 @@ void Graph::printGraph()
 			break;
 		}
 
-		std::cout << i << " " << type << std::endl;
+		LOG << i << " " << type;
 	}
 
 	if (printTextDescription)
 	{
-		std::cout << "Adjacency Matrix: " << std::endl;
+		LOG << "Adjacency Matrix: ";
 	}
 	for (int i = 0; i < numNodes; i++)
 	{
 		for (int j = 0; j < numNodes; j++)
 		{
 
-			std::cout << adjacencyMatrix.at(i).at(j) << " ";
+			LOG_NOEND << adjacencyMatrix.at(i).at(j) << " ";
 		}
-		std::cout << std::endl;
+		LOG << "";
 	}
 
 }

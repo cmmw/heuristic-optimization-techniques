@@ -11,6 +11,7 @@
 #include "LNS.h"
 #include "RandConstHeu.h"
 #include "GRASP.h"
+#include "Logger.h"
 
 using namespace tcbvrp;
 
@@ -154,12 +155,12 @@ int main(int argc, char* argv[])
 	}
 	// getopt end
 
-	std::cout << "Set START_REMOVES to " << START_REMOVES << std::endl;
-	std::cout << "Set TRIALS_PER_COUNT to " << TRIALS_PER_COUNT << std::endl;
-	std::cout << "Set REMOVE_LIMIT to " << REMOVE_LIMIT << std::endl;
-	std::cout << "Set D to " << D << std::endl;
-	std::cout << "Set ALPHA to " << ALPHA << std::endl;
-	std::cout << "Set GRASP_TRIALS to " << GRASP_TRIALS << std::endl;
+	LOG << "Set START_REMOVES to " << START_REMOVES;
+	LOG << "Set TRIALS_PER_COUNT to " << TRIALS_PER_COUNT;
+	LOG << "Set REMOVE_LIMIT to " << REMOVE_LIMIT;
+	LOG << "Set D to ";
+	LOG << "Set ALPHA to " << ALPHA;
+	LOG << "Set GRASP_TRIALS to " << GRASP_TRIALS;
 
 	Graph graph = Graph::createGraph(instanceFile);
 	//graph.printGraph();
@@ -182,27 +183,31 @@ int main(int argc, char* argv[])
 	sol.printSolution();
 
 	double ms = double(end - begin) / CLOCKS_PER_SEC;
-	std::cout << "Took " << ms << " seconds" << std::endl;
+	LOG << "Took " << ms << " seconds";
+
+	// official output comes here
+	sol.printOfficialSolution();
+
 	return 0;
 }
 
 void runConstHeu(Solution* sol, const Graph& graph)
 {
-	std::cout << "Running ConstHeu" << std::endl;
+	LOG << "Running ConstHeu";
 	ConstHeu cons(sol, graph);
 	cons.solve();
 }
 
 void runRandConstHeu(Solution* sol, const Graph& graph)
 {
-	std::cout << "Running RandConstHeu" << std::endl;
+	LOG << "Running RandConstHeu";
 	RandConstHeu cons(sol, graph);
 	cons.solve();
 }
 
 void runLNS(Solution* sol, const Graph& graph)
 {
-	std::cout << "Running LNS" << std::endl;
+	LOG << "Running LNS";
 	ConstHeu cons(sol, graph);
 	cons.solve();
 	LNS lns(sol, graph);
@@ -211,7 +216,7 @@ void runLNS(Solution* sol, const Graph& graph)
 
 void runGRASP(Solution* sol, const Graph& graph)
 {
-	std::cout << "Running GRASP" << std::endl;
+	LOG << "Running GRASP";
 	GRASP grasp(sol, graph);
 	grasp.solve();
 }

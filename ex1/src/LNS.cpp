@@ -10,9 +10,9 @@
 #include <iostream>
 #include <ctime>
 #include <climits>
-
 #include "LNS.h"
 #include "Constants.h"
+#include "Logger.h"
 
 namespace tcbvrp
 {
@@ -48,7 +48,9 @@ void LNS::solve()
 	if (feasible)
 		bestCosts = solution->getTotalCosts();
 
-	std::cout << std::endl << "removes " << removes << ":" << std::endl << "Solution: ";
+	LOG << "";
+	LOG << "removes " << removes << ":";
+	LOG_NOEND << "Solution: ";
 	while (removes <= REMOVE_LIMIT && removes <= (int) graph.getDemandNodes().size())
 	{
 		// Choose Pairs to remove
@@ -70,14 +72,18 @@ void LNS::solve()
 			if (removes != START_REMOVES)
 			{
 				removes = START_REMOVES;
-				std::cout << std::endl << "removes " << removes << ":" << std::endl << "Solution: ";
+				LOG << "";
+				LOG << "removes " << removes << ":";
+				LOG_NOEND << "Solution: ";
 			}
 		}
 
 		if (trials == TRIALS_PER_COUNT)
 		{
 			removes++;
-			std::cout << std::endl << "removes " << removes << ":" << std::endl << "Solution: ";
+			LOG << "";
+			LOG << "removes " << removes << ":";
+			LOG_NOEND << "Solution: ";
 			trials = 0;
 		}
 	}
@@ -164,7 +170,7 @@ void LNS::reinsertPairs(std::vector<std::pair<Node*, Node*> > pairs, int curCost
 			foundBetter = true;
 			bestSolution = *solution;
 			bestCosts = curCosts;
-			std::cout << bestCosts << ", ";
+			LOG_NOEND << bestCosts << ", ";
 			std::cout.flush();
 		}
 	} else

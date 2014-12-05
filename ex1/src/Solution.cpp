@@ -8,6 +8,7 @@
 #include <iostream>
 #include "Solution.h"
 #include "Algorithm.h"
+#include "Logger.h"
 
 namespace tcbvrp
 {
@@ -48,24 +49,48 @@ int Solution::getNumberOfTours() const
 
 void Solution::printSolution() const
 {
-	std::cout << std::endl << "********* SOLUTION *********" << std::endl;
-	std::cout << "Tours: " << std::endl << std::endl;
+	LOG << "";
+	LOG << "********* SOLUTION *********";
+	LOG << "Tours: ";
+	LOG << "";
 	int c = 0;
 	int totalCosts = 0;
 	for (std::vector<std::vector<Node*> >::const_iterator tour = tours.begin(); tour != tours.end(); tour++)
 	{
 		c++;
-		std::cout << c << ". Tour:" << std::endl;
+		LOG << c << ". Tour:";
 		for (std::vector<Node*>::const_iterator it = tour->begin(); it != tour->end(); it++)
 		{
 			std::string type = ((*it)->getType() == Node::SUPPLY) ? "S" : "D";
-			std::cout << (*it)->getId() << type << ", ";
+			LOG_NOEND << (*it)->getId() << type << ", ";
 		}
 		int tourCosts = Algorithm::calcTourCosts(*tour, costs);
-		std::cout << std::endl << "Costs: " << tourCosts << std::endl << std::endl;
+		LOG << "Costs: " << tourCosts;
+		LOG << "";
 		totalCosts += tourCosts;
 	}
-	std::cout << "Total costs: " << totalCosts << std::endl;
+	LOG << "Total costs: " << totalCosts;
+}
+
+void Solution::printOfficialSolution() const
+{
+
+	int c = 0;
+	int totalCosts = 0;
+	for (std::vector<std::vector<Node*> >::const_iterator tour = tours.begin(); tour != tours.end(); tour++)
+	{
+		c++;
+		std::cout << "0 ";
+		for (std::vector<Node*>::const_iterator it = tour->begin(); it != tour->end(); it++)
+		{
+			std::cout << (*it)->getId() << " ";
+		}
+		std::cout << "0" << std::endl;
+		int tourCosts = Algorithm::calcTourCosts(*tour, costs);
+
+		totalCosts += tourCosts;
+	}
+	std::cout << totalCosts << std::endl;
 }
 
 int Solution::getTotalCosts() const

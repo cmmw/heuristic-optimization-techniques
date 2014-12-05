@@ -12,6 +12,7 @@
 #include "LNS.h"
 #include "RandConstHeu.h"
 #include "Constants.h"
+#include "Logger.h"
 
 namespace tcbvrp
 {
@@ -43,9 +44,11 @@ void GRASP::solve()
 			*solution = initSol;
 			bestCosts = solution->getTotalCosts();
 			i = -1;
-			std::cout << std::endl << "********* Grasp: " << solution->getTotalCosts();
+			LOG << "";
+			LOG << "********* Grasp: " << solution->getTotalCosts();
 		}
-		std::cout << std::endl << "---" << std::endl;
+		LOG << "";
+		LOG << "---";
 		i++;
 	}
 }

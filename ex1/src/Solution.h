@@ -26,6 +26,7 @@ public:
 	void clear();
 	int getNumberOfTours() const;
 	void printSolution() const;
+	void printOfficialSolution() const;
 	int getTotalCosts() const;
 
 private:
