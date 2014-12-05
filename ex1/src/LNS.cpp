@@ -57,6 +57,8 @@ void LNS::solve()
 		// Reinsert the pairs
 		reinsertPairs(pairs, solution->getTotalCosts());
 
+		bestSolution.cleanEmptyTours();
+
 		*solution = bestSolution;
 		trials++;
 		if (foundBetter)
@@ -182,7 +184,6 @@ void LNS::reinsertPairs(std::vector<std::pair<Node*, Node*> > pairs, int curCost
 		for (std::vector<std::pair<int, int> >::iterator it = positions.begin(); it != positions.end() && !quit; it++)
 		{
 			bool skipSubtree = false;
-			bool addTour = false;
 			int delta;
 
 
@@ -192,7 +193,6 @@ void LNS::reinsertPairs(std::vector<std::pair<Node*, Node*> > pairs, int curCost
 				solution->addTour(tour);
 
 				it->first = solution->getNumberOfTours()-1;
-				addTour = true;
 			}
 
 
@@ -231,10 +231,7 @@ void LNS::reinsertPairs(std::vector<std::pair<Node*, Node*> > pairs, int curCost
 				return;
 
 			removeAtPosition(*it);
-			// if tour was added delete empty tour again
-			if (addTour) {
-				solution->cleanEmptyTours();
-			}
+
 		}
 	}
 }
@@ -276,6 +273,7 @@ std::vector<std::pair<int, int> > LNS::getPositionsForPair(std::pair<Node*, Node
 	std::vector<std::pair<int, int> > pairs;
 
 	bool type; // type of pair: true = S->D, false = D->S
+	bool emptyTourExists = false;
 	if (pair.first->getType() == Node::SUPPLY)
 	{
 		type = true;
@@ -287,6 +285,9 @@ std::vector<std::pair<int, int> > LNS::getPositionsForPair(std::pair<Node*, Node
 
 	for (unsigned tour_number = 0; tour_number < solution->getTours().size(); tour_number++)
 	{
+		if (solution->getTours().at(tour_number).size() == 0) {
+			emptyTourExists = true;
+		}
 		int offset = 0; // if the type is S->D all even positions including 0 will be considered
 		if (!type)
 		{
@@ -298,8 +299,8 @@ std::vector<std::pair<int, int> > LNS::getPositionsForPair(std::pair<Node*, Node
 		}
 	}
 
-	// if type S->D add a special position -1, 0 to generate new tour
-	if (type && (int) solution->getTours().size() < graph.getNumberOfVehicles()) {
+	// if type S->D add a special position -1, 0 to generate new tour if there an empty tour doesn't exist already
+	if (type && !emptyTourExists && ((int) solution->getTours().size()) < graph.getNumberOfVehicles()) {
 		pairs.push_back(std::make_pair(-1, 0));
 	}
 
