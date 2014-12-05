@@ -35,19 +35,11 @@ void LNS::solve()
 	VariableOrder varOrder(graph.getAdjacencyMatrix());
 
 	// check if initial solution is feasible and set bestCosts if so
-	bool feasible = true;
-	// only the last one has to be checked, the others will be correct anyway right?
-	//for (std::vector<std::vector<Node*> >::iterator tour = solution->getTours().begin(); tour != solution->getTours().end(); tour++)
-	//{
-		if (Algorithm::calcTourCosts(solution->getTours().end()*, graph.getAdjacencyMatrix()) > graph.getGlobalTimeLimit())
-		{
-			feasible = false;
-			break;
-		}
-	//}
-
-	if (feasible)
+	// only the last one has to be checked, the others will be correct anyway right
+	if (Algorithm::calcTourCosts(*(solution->getTours().end() - 1), graph.getAdjacencyMatrix()) > graph.getGlobalTimeLimit())
+	{
 		bestCosts = solution->getTotalCosts();
+	}
 
 	LOG << "";
 	LOG << "removes " << removes << ":";
@@ -138,7 +130,7 @@ std::vector<std::pair<std::pair<int, int>, double> > LNS::rankUsingRelatedness(c
 		std::vector<Node*> &tour = solution->getTours()[tourIdx];
 		for (unsigned int nodeIdx = 0; nodeIdx + 1 < tour.size(); nodeIdx++)
 		{
-			double f = relatedness(nodePair, tourIndex, std::pair<Node*, Node*>(tour[nodeIdx], tour[nodeIdx + 1]), tourIdx);
+			double f = relatedness(tourIndex, std::pair<Node*, Node*>(tour[nodeIdx], tour[nodeIdx + 1]), tourIdx);
 			ret.push_back(std::pair<std::pair<int, int>, int>(std::pair<int, int>(tourIdx, nodeIdx), f));
 		}
 	}
@@ -146,11 +138,11 @@ std::vector<std::pair<std::pair<int, int>, double> > LNS::rankUsingRelatedness(c
 	return ret;
 }
 
-double LNS::relatedness(const std::pair<Node*, Node*>& n1, int tourIdx1, const std::pair<Node*, Node*>& n2, int tourIdx2) const
+double LNS::relatedness(int tourIdx1, const std::pair<Node*, Node*>& n2, int tourIdx2) const
 		{
 	double c = graph.getAdjacencyMatrix()[n2.first->getId()][n2.second->getId()] / (double) graph.getMaxCosts();
 
-	if (tourIdx1 == tourIdx2)
+	if (tourIdx1 != tourIdx2)
 	{
 		c += 1;
 	}
@@ -159,7 +151,7 @@ double LNS::relatedness(const std::pair<Node*, Node*>& n1, int tourIdx1, const s
 
 bool LNS::relatednessSort(const std::pair<std::pair<int, int>, int>& n1, const std::pair<std::pair<int, int>, int>& n2)
 {
-	return n1.second < n2.second;
+	return n1.second > n2.second;
 }
 
 void LNS::reinsertPairs(std::vector<std::pair<Node*, Node*> > pairs, int curCosts)
