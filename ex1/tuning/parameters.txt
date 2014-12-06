@@ -26,9 +26,9 @@
 ##    condition is satisfied, FALSE otherwise.
 
 # 1:            2:                   3: 4:      5:
-startRemoves    "--startRemoves "    i  (1, 4) 
+startRemoves    "--startRemoves "    i  (1, 3) 
 trials          "--trials "          i  (1, 10)
-removeLimit     "--removeLimit "     i  (4, 6) | removeLimit > startRemoves
+removeLimit     "--removeLimit "     i  (4, 6) 
 relatedness     "--relatedness "     r  (5.0, 25.0)
 greediness      "--greediness "      r  (0.0, 1.0)
 graspTrials     "--graspTrials "     i  (1, 10)
