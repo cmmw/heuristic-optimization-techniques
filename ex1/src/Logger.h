@@ -10,7 +10,7 @@
 #define LOG_NOEND Log(false)
 
 // Set here if you want logging messages to be printed
-const bool enableLogger = true;
+const bool enableLogger = false;
 
 class Log
 {

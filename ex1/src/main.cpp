@@ -191,7 +191,10 @@ int main(int argc, char* argv[])
 	LOG << "Took " << ms << " seconds";
 
 	// official output comes here
-	sol.printOfficialSolution();
+	// sol.printOfficialSolution();
+
+	// only print total costs for irace
+	std::cout << sol.getTotalCosts() << std::endl;
 
 	return 0;
 }
