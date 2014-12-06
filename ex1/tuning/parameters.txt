@@ -26,12 +26,11 @@
 ##    condition is satisfied, FALSE otherwise.
 
 # 1:            2:                   3: 4:      5:
-tabuListSize    "--tabuListSize "    i  (0, 150) 
-mcProbability   "--mcProbability "   i  (0, 100)
-iterationLimit  "--iterationLimit "  i  (5000, 12000)
-coolRate        "--coolRate "        r  (0.9, 0.99)
-resets          "--resets "          r  (0.0, 0.5)
-costLimit       "--costLimit "       r  (0.2, 0.5)
-minDomainFirst  "--minDomainFirst "  i  (0, 1)
-btHeuristic     "--btHeuristic "     o  ("AVal", "SVal", "GVal", "GAV")
+startRemoves    "--startRemoves "    i  (1, 10) 
+trials          "--trials "          i  (1, 10)
+removeLimit     "--removeLimit "     i  (1, 10)
+relatedness     "--relatedness "     i  (1, 30)
+greediness      "--greediness "      r  (0.0, 1.0)
+graspTrials     "--graspTrials "     i  (1, 10)
+
 
