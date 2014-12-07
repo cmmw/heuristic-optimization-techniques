@@ -9,6 +9,8 @@
 \usepackage{listings}
 \usepackage{amssymb}
 \usepackage{listings}
+\usepackage{chngpage}
+
 
 \KOMAoption{captions}{bottombeside}
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
@@ -86,40 +88,59 @@ We did some manual testing with parameters on the instances at first. The number
 
 To find out good values for relatedness and greediness we used irace \cite{lopez2011irace} with mostly default parameters. We only limited the maximal number of allowed runs for irace to 300 because time was running short. irace determined that a relatedness of about 2 and a greediness of 0.12 are good parameter choices.
 
+\section{Results and Discussion}
 
-%--startRemoves 2 --removeLimit 4 --relatedness 2 --greediness 0.12 --trials 15 --graspTrials 5 --instanceFile Instances\tcbvrp_30.prob --algo 2
+We performed experimental runs on instances with a different number of nodes. The results are shown in Table 1. For each run we performed 30 runs with the following parameters:
 
+\begin{itemize}
+ \item startRemoves 2
+ \item removeLimit 4
+ \item relatedness 2
+ \item greediness 0.12
+ \item trials 15
+ \item graspTrials 5
+\end{itemize}
 
-%*--startRemoves 2 --removeLimit 3 --relatedness 2 --greediness 0.12 --trials 15 --graspTrials 5 --instanceFile Instances\tcbvrp_30.prob --algo 2
+Note that runs that are marked with a star (*) use a removeLimit of 3 and runs marked with two stars (**) use a removeLimit of 2 instead.
 
-%**--startRemoves 2 --removeLimit 2 --relatedness 2 --greediness 0.12 --trials 15 --graspTrials 5 --instanceFile Instances\tcbvrp_30.prob --algo 2
+Each experiment was run 30 times, and then results of the best run were kept.
 
+One can clearly see that the greedy heuristic alone is easily outperformed by the approaches that use VLNS and GRASP.  With the use of GRASP a small improvement over VLNS can be achieved, however at the cost of runtime. Unfortunately we had to reduce the removeLimits for larger instances a bit, to be able to conduct all the necessary runs in time. Executing GRASP with a removeLimit of 4 would probably lead to even better results.
+
+\begin{table}
+    \begin{adjustwidth}{-.5in}{-.5in}  
+        \begin{center}
 \begin{tabular}{r | r | r | r | r | r | r | r | r}
 \hline
-Name & Gr.Heu. & Time &  VLNS & Time & Total & GRASP & Time & Total \\
+Nodes & Gr.Heu. & Time &  VLNS & Time & Total & GRASP & Time & Total \\
 \hline \hline 
-tcbvrp\_10.prob & 356 & 0 & 347 & 0.0037 & 0.1663 & 347 & 0.0335 & 0.8766 \\
+10 & 356 & 0 & 347 & 0.0037 & 0.1663 & 347 & 0.0335 & 0.8766 \\
 \hline
-tcbvrp\_30.prob & 798 & 0.0001 & 767 & 0.1394 & 3.0000 & 764 & 1.4821 & 26.4703 \\
+30 & 798 & 0.0001 & 767 & 0.1394 & 3.0000 & 764 & 1.4821 & 26.4703 \\
 \hline
-tcbvrp\_60.prob & 1841 & 0.0007 & 1712 & 2.8097 & 16.3781 & 1711 & 9.4027 & 315.7900 \\
+60 & 1841 & 0.0007 & 1712 & 2.8097 & 16.3781 & 1711 & 9.4027 & 315.7900 \\
 \hline
-tcbvrp\_90.prob & 2171 & 0.0017 & 2055 & 13.6852 & 222.8823 & 2055 & 67.0838 & 1709.3321\\
+90 & 2171 & 0.0017 & 2055 & 13.6852 & 222.8823 & 2055 & 67.0838 & 1709.3321\\
 \hline
-tcbvrp\_120.prob & 2844 & 0.0050 & 2745 & 17.5720 & 194.1892 & *2712 & 6.6881 & 200.7002 \\
+120 & 2844 & 0.0050 & 2745 & 17.5720 & 194.1892 & *2712 & 6.6881 & 200.7002 \\
 \hline
-tcbvrp\_180.prob & 4874 & 0.0071 & *4651 & 7.8030 & 106.1305 & *4623 & 36.1978 & 1216.7366 \\
+180 & 4874 & 0.0071 & *4651 & 7.8030 & 106.1305 & *4623 & 36.1978 & 1216.7366 \\
 \hline
-tcbvrp\_300.prob & 9390 & 0.0210 & *8833 & 7.9615 & 138.3080 & *8782 & 48.0761 & 1457.6698 \\
+300 & 9390 & 0.0210 & *8833 & 7.9615 & 138.3080 & *8782 & 48.0761 & 1457.6698 \\
 \hline
-tcbvrp\_400.prob & 11374 & 0.0387 & *10929 & 32.6781 & 482.6105 & **11073 & 21.5001 & 1061.1469 \\
+400 & 11374 & 0.0387 & *10929 & 32.6781 & 482.6105 & **11073 & 21.5001 & 1061.1469 \\
 \hline
-tcbvrp\_500.prob & 13922 & 0.0627 & **13514 & 7.5111 & 97.4571 & **13463 & 71.5584 & 2753.0495 \\
+500 & 13922 & 0.0627 & **13514 & 7.5111 & 97.4571 & **13463 & 71.5584 & 2753.0495 \\
 \hline
-tcbvrp\_700.prob & 19007 & 0.1300 & **18354 & 21.4090 & 396.1424 & ** \\
+700 & 19007 & 0.1300 & **18354 & 21.4090 & 396.1424 & ** \\
 \hline
 \end{tabular}
 
+        \caption{Table with best results from the runs. }
+        \label{myTable}
+        \end{center}
+    \end{adjustwidth}
+\end{table}
 
 \bibliographystyle{plain}
 \bibliography{literature0}
