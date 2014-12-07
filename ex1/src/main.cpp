@@ -34,17 +34,17 @@ void signalHandler(int signum);
 int main(int argc, char* argv[])
 {
 	srand(time(NULL));
-	if (argc < 3 || argc > 16)
+	if (argc < 3 || argc > 17)
 	{
 		std::cout << "Usage: " << argv[0] << " " << "--instanceFile <file>"
 				<< "[ --startRemoves <val> --trials <val> --removeLimit <val> --relatedness <val>"
-				<< "--greediness <val> --LNS --graspTrials <val> ]" << std::endl;
+				<< "--greediness <val> --LNS --graspTrials <val> --algo <0,1,2> ]" << std::endl;
 		return -1;
 	}
 
 	// get_opt start
 	int c;
-	bool lns = false;
+	int algo = 0;
 	std::istringstream arg;
 	std::string instanceFile;
 
@@ -59,7 +59,7 @@ int main(int argc, char* argv[])
 						{ "removeLimit", required_argument, 0, 'l' },
 						{ "relatedness", required_argument, 0, 'r' },
 						{ "greediness", required_argument, 0, 'g' },
-						{ "LNS", no_argument, 0, 'a' },					//if LNS is passed, LNS will be called, otherwise GRASP is called
+						{ "algo", required_argument, 0, 'a' },					//0 greedy const. heu., 1 vlns, 2 grasp
 						{ "graspTrials", required_argument, 0, 'z' },
 						{ 0, 0, 0, 0 }
 				};
@@ -120,7 +120,8 @@ int main(int argc, char* argv[])
 			}
 			break;
 		case 'a':
-			lns = true;
+			arg.str(optarg);
+			arg >> algo;
 			break;
 		case 'z':
 			arg.str(optarg);
@@ -173,14 +174,21 @@ int main(int argc, char* argv[])
 	Solution sol(graph.getAdjacencyMatrix());
 
 	clock_t begin = clock();
-	if (lns)
+
+	switch (algo)
+	{
+	case 0:
+		runConstHeu(&sol, graph);
+		break;
+	case 1:
 		runLNS(&sol, graph);
-	else
+		break;
+	case 2:
 		runGRASP(&sol, graph);
-//	runConstHeu(&sol, graph);
-//	runRandConstHeu(&sol, graph);
-//	runLNS(&sol, graph);
-//	runGRASP(&sol, graph);
+		break;
+	default:
+		runConstHeu(&sol, graph);
+	}
 
 	clock_t end = clock();
 
@@ -199,7 +207,7 @@ int main(int argc, char* argv[])
 	for (std::vector<Node*>::const_iterator it = graph.getDemandNodes().begin(); it != graph.getDemandNodes().end(); it++)
 	{
 		if (!(*it)->getVisited())
-			LOG << "Some demand nodes are unvisited!";
+			std::cerr << "Some demand nodes are unvisited!";
 	}
 	return 0;
 }
