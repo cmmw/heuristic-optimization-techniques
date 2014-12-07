@@ -89,6 +89,17 @@ void ConstHeu::solve()
 				tour.push_back(tmpNode);
 			} else //if not, close this tour (only if there are vehicles left, otherwise violate the time limit in the last tour)
 			{
+				//check if current cost + cost to reach node 0 exceeds the global time limit, remove last node until tour is feasible
+				Node* last = tour.back();
+				int ec = matrix[last->getId()][0];
+				while (curCosts + ec > graph.getGlobalTimeLimit())
+				{
+					last->setVisited(false);
+					tour.pop_back();
+					curCosts -= matrix[tour.back()->getId()][last->getId()];
+					last = tour.back();
+					ec = matrix[last->getId()][0];
+				}
 				break;
 			}
 		}
