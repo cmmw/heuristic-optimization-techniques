@@ -196,6 +196,11 @@ int main(int argc, char* argv[])
 	// only print total costs for irace
 	std::cout << sol.getTotalCosts() << std::endl;
 
+	for (std::vector<Node*>::const_iterator it = graph.getDemandNodes().begin(); it != graph.getDemandNodes().end(); it++)
+	{
+		if (!(*it)->getVisited())
+			LOG << "Some demand nodes are unvisited!";
+	}
 	return 0;
 }
 
