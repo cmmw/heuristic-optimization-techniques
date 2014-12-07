@@ -79,8 +79,11 @@ void LNS::solve()
 		{
 			removes++;
 			LOG << "";
-			LOG << "removes " << removes << ":";
-			LOG_NOEND << "Solution: ";
+			if (removes <= REMOVE_LIMIT)
+			{
+				LOG << "removes " << removes << ":";
+				LOG_NOEND << "Solution: ";
+			}
 			trials = 0;
 		}
 	}
@@ -186,15 +189,14 @@ void LNS::reinsertPairs(std::vector<std::pair<Node*, Node*> > pairs, int curCost
 			bool skipSubtree = false;
 			int delta;
 
-
 			// -1 marks the special position to create a new empty tour
-			if (it->first == -1) {
+			if (it->first == -1)
+			{
 				std::vector<Node*> tour;
 				solution->addTour(tour);
 
-				it->first = solution->getNumberOfTours()-1;
+				it->first = solution->getNumberOfTours() - 1;
 			}
-
 
 			delta = insertAtPosition(currentPair, *it);
 
@@ -285,7 +287,8 @@ std::vector<std::pair<int, int> > LNS::getPositionsForPair(std::pair<Node*, Node
 
 	for (unsigned tour_number = 0; tour_number < solution->getTours().size(); tour_number++)
 	{
-		if (solution->getTours().at(tour_number).size() == 0) {
+		if (solution->getTours().at(tour_number).size() == 0)
+		{
 			emptyTourExists = true;
 		}
 		int offset = 0; // if the type is S->D all even positions including 0 will be considered
@@ -300,7 +303,8 @@ std::vector<std::pair<int, int> > LNS::getPositionsForPair(std::pair<Node*, Node
 	}
 
 	// if type S->D add a special position -1, 0 to generate new tour if there an empty tour doesn't exist already
-	if (type && !emptyTourExists && ((int) solution->getTours().size()) < graph.getNumberOfVehicles()) {
+	if (type && !emptyTourExists && ((int) solution->getTours().size()) < graph.getNumberOfVehicles())
+	{
 		pairs.push_back(std::make_pair(-1, 0));
 	}
 
