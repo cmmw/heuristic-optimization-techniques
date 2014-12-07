@@ -86,20 +86,29 @@ We some manual testing with parameters on the instances at first. The number of 
 
 To find out good values for relatedness and greediness we used irace \cite{lopez2011irace} with its default parameters. irace determined that a relatedness of about 2 and a greediness of 0.12 are good parameter choices.
 
+
 %--startRemoves 2 --removeLimit 4 --relatedness 2 --greediness 0.12 --trials 15 --graspTrials 5 --instanceFile Instances\tcbvrp_30.prob --algo 2
 
-\begin{tabular}{r | r | r | r | r | r | r}
+
+%--startRemoves 2 --removeLimit 4 --relatedness 2 --greediness 0.12 --trials 15 --graspTrials 5 --instanceFile Instances\tcbvrp_30.prob --algo 2
+
+\begin{tabular}{r | r | r | r | r | r | r | r | r}
 \hline
-Name & Greedy Const. Heu. & Time & VLNS & Time & GRASP & Time \\
+Name & Gr.Heu. & Time &  VLNS & Time & Total & GRASP & Time & Total \\
 \hline \hline 
-tcbvrp\_10.prob & 356 & 0 & 347 & 0.015 & 347 & 0.078 \\
+tcbvrp\_10.prob & 356 & 0 & 347 & 0.0037 & 0.1663 & 347 & 0.0335 & 0.8766 \\
 \hline
-tcbvrp\_30.prob & 798 & 0 & 765 & 0.249 & 764 & 1.623 \\
+tcbvrp\_30.prob & 798 & 0.0001 & 767 & 0.1394 & 3.0000 & 764 & 1.4821 & 26.4703 \\
 \hline
-tcbvrp\_60.prob & 798 & 0 & 765 & 0.249 & 764 & 1.623 \\
+tcbvrp\_60.prob & 1841 & 0.0007 & 1712 & 2.8097 & 16.3781 & 1711 & 9.4027 & 315.7900 \\
+\hline
+tcbvrp\_90.prob & 2171 & 0.0017 & 2055 & 13.6852 & 222.8823 & \\
+\hline
+tcbvrp\_120.prob & 2844 & 0.0050 & 2745 & 17.5720 & 194.1892 & *2712 & 6.6881 & 200.7002 \\
+\hline
+tcbvrp\_180.prob & 4874 & 0.0071 & *4651 & 7.8030 & 106.1305 & *
 
 \end{tabular}
-
 
 
 \bibliographystyle{plain}
