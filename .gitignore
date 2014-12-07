@@ -12,3 +12,6 @@ ex1/Debug
 tcbvrp_solver
 tcbvrp_solver.exe
 /Debug
+*.bbl
+*.lg
+*.gz
