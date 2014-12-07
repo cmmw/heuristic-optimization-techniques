@@ -39,7 +39,7 @@
 
 \subsection{Greedy Construction Heuristic}
 
-We use a very simple construction heuristic: For each Nnde we create a list of potential neighbours sorted by the arc costs.
+We use a very simple construction heuristic: For each Node we create a list of potential neighbours sorted by the arc costs.
 This is done in such a way that for the zero node and demand nodes weights to all supply nodes are stored. In the case of the supply
 nodes all demand nodes are potential neighbours.
 To create the tours always the cheapest direct path to a neighbour is chosen. Nodes that have been visited will be removed from that
@@ -54,15 +54,13 @@ A lot of our implementation ideas were based on the work of Paul Shaw \cite{shaw
 At each iteration of local search we remove randomly chosen pairs of nodes and try to reinsert them into valid slots. So for example a pair $S \rightarrow D$ can be inserted between a zero and a supply node, whereas a $D \rightarrow S$ pair can only be inserted between a supply and a demand node. By this procedure it is also possible to create new tours if there are vehicles left or to destroy a tour if all its nodes are removed. Since we do a whole Tree Search over all possible insertion slots for a multitude of pairs, finding the best neighbour can be time consuming task. To reduce the workload we try to make the tree as small as possible with a branch and bound technique similar to the one described in \cite{shaw1998using}
 As an upper bound the cost of the so far best found solution is taken. To create a lower bound we use the following formula:
 
-
-
-$lowerBound = 3 \cdot minArcCost \cdot numPairs - maxArcCost \cdot numPairs $
-
-
+$lowerBound = 3 \cdot minArcCost \cdot numPairs - maxArcCost \cdot numPairs$
 
 We also use a simple variable selection heuristic for our Tree Search: Pairs that are connected with a higher cost are chosen first. This is done because for one thing violations of the time limit might be reached earlier in the tree and for another thing later in the tree this costly arcs might be destroyed by other re-insertions and therefore affect the costs positively.
 
 We iteratively increase the number of removed pairs until a better neighbour is found. The way the pairs are chosen is done randomly although we try to prefer pairs that are connected with low costs with a certain factor. As soon as the algorithm cannot find any improvements in a number of iterations the program will output the best solution it has found.
+
+The size of the search tree is mainly dependent on the number of node pairs that are removed and reinserted and therefore has a complexity of $O(n^{maxRemoves})$.
 
 \subsection{Greedy Randomized Adaptive Search Procedure}
 We iteratively generate solutions using a randomized construction heuristic and apply our Very Large Neighbourhood Search on all generated solutions. In the end we take the overall best solution found.
@@ -83,6 +81,10 @@ Our algorithm is configured by a number of parameters that affect the search:
   \item greediness: This real value between 0 and 1 influences the generation of the Restricted Candidate List generated during the Randomized Greedy Construction heuristic. A value of 0 will use a totally greedy heuristic, whereas a value of 1 will only make random node selections to build the initial solution. Any value in between makes a tradeoff.
 \end{itemize}
 
+\section{Parameter Tuning}
+We some manual testing with parameters on the instances at first. The number of removes has a high influence on the running time and we therefore set the removeLimit on lower values for instances with a large number of nodes. Regarding the trials parameters 15 seemed to be a decent value for trials and 5 for graspTrials.
+
+To find out good values for relatedness and greediness we used irace \cite{lopez2011irace} with its default parameters. irace determined that a relatedness of about 2 and a greediness of 0.12 are good parameter choices.
 
 %--startRemoves 2 --removeLimit 4 --relatedness 2 --greediness 0.12 --trials 15 --graspTrials 5 --instanceFile Instances\tcbvrp_30.prob --algo 2
 
