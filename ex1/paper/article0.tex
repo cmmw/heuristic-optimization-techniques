@@ -90,7 +90,9 @@ To find out good values for relatedness and greediness we used irace \cite{lopez
 %--startRemoves 2 --removeLimit 4 --relatedness 2 --greediness 0.12 --trials 15 --graspTrials 5 --instanceFile Instances\tcbvrp_30.prob --algo 2
 
 
-%--startRemoves 2 --removeLimit 4 --relatedness 2 --greediness 0.12 --trials 15 --graspTrials 5 --instanceFile Instances\tcbvrp_30.prob --algo 2
+%*--startRemoves 2 --removeLimit 3 --relatedness 2 --greediness 0.12 --trials 15 --graspTrials 5 --instanceFile Instances\tcbvrp_30.prob --algo 2
+
+%**--startRemoves 2 --removeLimit 2 --relatedness 2 --greediness 0.12 --trials 15 --graspTrials 5 --instanceFile Instances\tcbvrp_30.prob --algo 2
 
 \begin{tabular}{r | r | r | r | r | r | r | r | r}
 \hline
@@ -102,12 +104,20 @@ tcbvrp\_30.prob & 798 & 0.0001 & 767 & 0.1394 & 3.0000 & 764 & 1.4821 & 26.4703 
 \hline
 tcbvrp\_60.prob & 1841 & 0.0007 & 1712 & 2.8097 & 16.3781 & 1711 & 9.4027 & 315.7900 \\
 \hline
-tcbvrp\_90.prob & 2171 & 0.0017 & 2055 & 13.6852 & 222.8823 & \\
+tcbvrp\_90.prob & 2171 & 0.0017 & 2055 & 13.6852 & 222.8823 & 2055 & 67.0838 & 1709.3321\\
 \hline
 tcbvrp\_120.prob & 2844 & 0.0050 & 2745 & 17.5720 & 194.1892 & *2712 & 6.6881 & 200.7002 \\
 \hline
-tcbvrp\_180.prob & 4874 & 0.0071 & *4651 & 7.8030 & 106.1305 & *
-
+tcbvrp\_180.prob & 4874 & 0.0071 & *4651 & 7.8030 & 106.1305 & *4623 & 36.1978 & 1216.7366 \\
+\hline
+tcbvrp\_300.prob & 9390 & 0.0210 & *8833 & 7.9615 & 138.3080 & *8782 & 48.0761 & 1457.6698 \\
+\hline
+tcbvrp\_400.prob & 11374 & 0.0387 & *10929 & 32.6781 & 482.6105 & **11073 & 21.5001 & 1061.1469 \\
+\hline
+tcbvrp\_500.prob & 13922 & 0.0627 & **13514 & 7.5111 & 97.4571 & ** \\
+\hline
+tcbvrp\_700.prob & 19007 & 0.1300 & **18354 & 21.4090 & 396.1424 & ** \\
+\hline
 \end{tabular}
 
 
