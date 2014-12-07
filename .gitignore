@@ -13,5 +13,6 @@ tcbvrp_solver
 tcbvrp_solver.exe
 /Debug
 *.bbl
-*.lg
+*.blg
 *.gz
+ex1/.pydevproject
