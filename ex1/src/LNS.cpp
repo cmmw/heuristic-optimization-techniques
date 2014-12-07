@@ -38,7 +38,7 @@ void LNS::solve()
 
 	// check if initial solution is feasible and set bestCosts if so
 	// only the last one has to be checked, the others will be correct anyway right
-	if (Algorithm::calcTourCosts(*(solution->getTours().end() - 1), graph.getAdjacencyMatrix()) > graph.getGlobalTimeLimit())
+	if (Algorithm::calcTourCosts(*(solution->getTours().end() - 1), graph.getAdjacencyMatrix()) <= graph.getGlobalTimeLimit())
 	{
 		bestCosts = solution->getTotalCosts();
 	}
