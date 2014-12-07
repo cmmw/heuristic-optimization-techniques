@@ -1,3 +1,4 @@
+
 \documentclass[a4paper]{scrartcl}
 
 \usepackage[T1]{fontenc}
@@ -33,6 +34,40 @@
  \maketitle
 \endgroup
 
+\section{Description of the algorithms}
+
+\subsection{Greedy Construction Heuristic}
+
+We use a very simple construction heuristic: For each Node we create a list of potential neighbours sorted by the arc costs.
+This is done in such a way that for the zero node and demand nodes weights to all supply nodes are stored. In the case of the supply
+nodes all demand nodes are potential neighbours.
+To create the tours always the cheapest direct path to a neighbour is chosen. Nodes that have been visited will be removed from that
+pre-sorted list. The heuristic tries to make a tour as long as possible, therefore a new tour is started only if the time limit would be exceeded.
+If there are no more vehicles available, the last tour might become infeasible. For this reason the heuristic does not necessarily
+produce a feasible solution.
+
+\subsection{Very Large Neighbourhood Search}
+
+Our algorithm can be seen as a combination of Constraint Programming and Local Search methods. We basically do a Very Large Neighbourhood Search, which uses a tree search to find good neighbours of a given solution.
+A lot of our implementation ideas were based on the work of Paul Shaw \cite{shaw1998using}. We applied the procedure described in his paper and modified it to fit our problem description.
+
+We remove randomly chosen pairs of nodes and try to reinsert them into valid slots. a pair $S \rightarrow D$ can be inserted between a zero and a supply node, whereas a $D \rightarrow S$ pair can only be inserted between a supply and a demand node. This way it is also possible to create new tours if there are vehicles left or empty a tour if all its nodes are removed. Since we do a whole treesearch over all possible insertion slots for a multide of pairs we try to make the tree as small as possible with a branch and bound technique.
+As an upper bound the cost of the so far best found solution is taken. To create a lower bound we use the following formula:
+
+
+
+$lowerBound = 3 \cdot minArcCost \cdot numPairs - maxArcCost \cdot numPairs $
+
+
+
+We also use a simple variable selection heuristic for the tree search: Pairs that are connected with a higher cost are chosen first.
+
+We iteratively increase the number of removed pairs until a better neighbour is found. The way the pairs are chosen is done randomly although we try to prefer pairs that are connected with low costs with a certain factor. As soon as the algorithm cannot find any improvements in a number of iterations the program will output the best solution it has found.
+
+\subsection{Greedy Randomized Adaptive Search Procedure}
+We iteratively generate using our construction heuristic and apply our Very Large Neighbourhood Search on all generated solutions. In the end we take the overall best solution found.
+
+
 %--startRemoves 2 --removeLimit 4 --relatedness 2 --greediness 0.12 --trials 15 --graspTrials 5 --instanceFile Instances\tcbvrp_30.prob --algo 2
 
 \begin{tabular}{r | r | r | r | r | r | r}
@@ -47,4 +82,11 @@ tcbvrp\_60.prob & 798 & 0 & 765 & 0.249 & 764 & 1.623 \\
 
 \end{tabular}
 
+
+
+\bibliographystyle{plain}
+\bibliography{literature0}
+
 \end{document}
+
+
