@@ -82,9 +82,9 @@ Our algorithm is configured by a number of parameters that affect the search:
 \end{itemize}
 
 \section{Parameter Tuning}
-We some manual testing with parameters on the instances at first. The number of removes has a high influence on the running time and we therefore set the removeLimit on lower values for instances with a large number of nodes. Regarding the trials parameters 15 seemed to be a decent value for trials and 5 for graspTrials.
+We did some manual testing with parameters on the instances at first. The number of removes has a high influence on the running time and we therefore set the removeLimit on lower values for instances with a large number of nodes. Regarding the trials parameters 15 seemed to be a decent value for trials and 5 for graspTrials.
 
-To find out good values for relatedness and greediness we used irace \cite{lopez2011irace} with its default parameters. irace determined that a relatedness of about 2 and a greediness of 0.12 are good parameter choices.
+To find out good values for relatedness and greediness we used irace \cite{lopez2011irace} with mostly default parameters. We only limited the maximal number of allowed runs for irace to 300 because time was running short. irace determined that a relatedness of about 2 and a greediness of 0.12 are good parameter choices.
 
 %--startRemoves 2 --removeLimit 4 --relatedness 2 --greediness 0.12 --trials 15 --graspTrials 5 --instanceFile Instances\tcbvrp_30.prob --algo 2
 
