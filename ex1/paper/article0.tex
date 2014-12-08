@@ -78,7 +78,7 @@ Our algorithm is configured by a number of parameters that affect the search:
 
   \item trials: The number of trials that are performed with each number of pair removes until the removecount will be increased. If trials is for example 5 the search has to perform 5 iterations without finding any better solution before the number of pair removes is increased by one.
 
-  \item relatedness: This integer value has an effect on the choice of pairs that are selected for removal during neighbourhood search. If relatedness is 0 the pairs will be ranked totally depending on their connecting arc costs. With a relatedness of $\infty$ the choice will be made completely at random. Any value in between makes a tradeoff.
+  \item relatedness: This integer value has an effect on the choice of pairs that are selected for removal during neighbourhood search. If relatedness is $\infty$ the pairs will be ranked totally depending on their connecting arc costs. With a relatedness of 1 the choice will be made completely at random. Any value in between makes a tradeoff.
 
   \item greediness: This real value between 0 and 1 influences the generation of the Restricted Candidate List generated during the Randomized Greedy Construction heuristic. A value of 0 will use a totally greedy heuristic, whereas a value of 1 will only make random node selections to build the initial solution. Any value in between makes a tradeoff.
 \end{itemize}
