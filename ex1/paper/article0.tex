@@ -41,7 +41,7 @@
 
 \subsection{Greedy Construction Heuristic}
 
-We use a very simple construction heuristic: For each Node we create a list of potential neighbours sorted by the arc costs.
+We use a very simple construction heuristic: For each node we create a list of potential neighbours sorted by the arc costs.
 This is done in such a way that for the zero node and demand nodes weights to all supply nodes are stored. In the case of the supply
 nodes all demand nodes are potential neighbours.
 To create the tours always the cheapest direct path to a neighbour is chosen. Nodes that have been visited will be removed from that
@@ -53,7 +53,7 @@ produce a feasible solution.
 Our algorithm uses a combination of Constraint Programming and Local Search methods. We basically do a Very Large Neighbourhood Search, which uses a Tree Search to find good neighbours of a given solution.
 A lot of our implementation ideas were based on the work of Paul Shaw \cite{shaw1998using}. We applied the procedure described in his paper and modified it to fit our problem description.
 
-At each iteration of local search we remove randomly chosen pairs of nodes and try to reinsert them into valid slots. So for example a pair $S \rightarrow D$ can be inserted between a zero and a supply node, whereas a $D \rightarrow S$ pair can only be inserted between a supply and a demand node. By this procedure it is also possible to create new tours if there are vehicles left or to destroy a tour if all its nodes are removed. Since we do a whole Tree Search over all possible insertion slots for a multitude of pairs, finding the best neighbour can be time consuming task. To reduce the workload we try to make the tree as small as possible with a branch and bound technique similar to the one described in \cite{shaw1998using}
+At each iteration of local search we remove randomly chosen pairs of nodes and try to reinsert them into valid slots. So for example a pair $S \rightarrow D$ can be inserted between a zero and a supply node, whereas a $D \rightarrow S$ pair can only be inserted between a supply and a demand node. By this procedure it is also possible to create new tours if there are vehicles left or to destroy a tour if all its nodes are removed. Since we do a whole Tree Search over all possible insertion slots for a multitude of pairs, finding the best neighbour can be a time consuming task. To reduce the workload we try to make the tree as small as possible with a branch and bound technique similar to the one described in \cite{shaw1998using}
 As an upper bound the cost of the so far best found solution is taken. To create a lower bound we use the following formula:
 
 $lowerBound = 3 \cdot minArcCost \cdot numPairs - maxArcCost \cdot numPairs$
@@ -132,7 +132,7 @@ Nodes & Gr.Heu. & Time &  VLNS & Time & Total & GRASP & Time & Total \\
 \hline
 500 & 13922 & 0.0627 & **13514 & 7.5111 & 97.4571 & **13463 & 71.5584 & 2753.0495 \\
 \hline
-700 & 19007 & 0.1300 & **18354 & 21.4090 & 396.1424 & ** \\
+700 & 19007 & 0.1300 & **18354 & 21.4090 & 396.1424 & **18311 & 447.6060 & 9254.5938 \\
 \hline
 \end{tabular}
 
