@@ -30,6 +30,7 @@ void runRandConstHeu(Solution* sol, const Graph& graph);
 void runLNS(Solution* sol, const Graph& graph);
 void runGRASP(Solution* sol, const Graph& graph);
 void signalHandler(int signum);
+void checkSolution(const Graph& graph, Solution& sol);
 
 int main(int argc, char* argv[])
 {
@@ -192,6 +193,8 @@ int main(int argc, char* argv[])
 
 	clock_t end = clock();
 
+	checkSolution(graph, sol);
+
 	/*Print results*/
 	sol.printSolution();
 
@@ -202,7 +205,7 @@ int main(int argc, char* argv[])
 	sol.printOfficialSolution();
 
 	// only print total costs for irace
-	std::cout << sol.getTotalCosts() << std::endl;
+//	std::cout << sol.getTotalCosts() << std::endl;
 
 	for (std::vector<Node*>::const_iterator it = graph.getDemandNodes().begin(); it != graph.getDemandNodes().end(); it++)
 	{
@@ -245,4 +248,38 @@ void runGRASP(Solution* sol, const Graph& graph)
 void signalHandler(int signum)
 {
 	quit = true;
+}
+
+void checkSolution(const Graph& graph, Solution& sol)
+{
+	for (std::vector<Node*>::const_iterator it = graph.getNodes().begin(); it != graph.getNodes().end(); it++)
+	{
+		(*it)->setVisited(false);
+	}
+
+	const std::vector<std::vector<int> >& m = graph.getAdjacencyMatrix();
+	for (std::vector<std::vector<Node*> >::iterator tour = sol.getTours().begin(); tour != sol.getTours().end(); tour++)
+	{
+		for (std::vector<Node*>::const_iterator it = tour->begin(); it != tour->end(); it++)
+		{
+			for (std::vector<Node*>::const_iterator nodeIt = graph.getNodes().begin(); nodeIt != graph.getNodes().end(); nodeIt++)
+			{
+				if ((*nodeIt)->getId() == (*it)->getId())
+				{
+					(*nodeIt)->setVisited(true);
+					break;
+				}
+			}
+		}
+	}
+
+	for (std::vector<Node*>::const_iterator it = graph.getDemandNodes().begin(); it != graph.getDemandNodes().end(); it++)
+	{
+		if (!(*it)->getVisited())
+		{
+			std::cerr << "Solution infeasible: contains unvisited demand nodes!" << std::endl;
+			exit(1);
+		}
+	}
+//	std::cerr << "Solution feasible" << std::endl;
 }
