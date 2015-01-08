@@ -106,17 +106,25 @@ void ACO::solve()
 				if (idx == -1)
 					break;
 			}
-			solutions.push_back(tours);
+
+			if (tours.size() <= graph.getNumberOfVehicles())
+				solutions.push_back(tours);
 		}
 
 		//Update pheromones
 
 		//Reinforce used paths
+		int bestIdx = 0;
+		int bestCost = INT32_MAX;
+		int index = 0;
+
 		for (std::vector<std::vector<std::vector<Node*> > >::iterator tours = solutions.begin(); tours != solutions.end(); tours++)
 		{
+			int totalCosts = 0;
 			for (std::vector<std::vector<Node*> >::iterator tour = tours->begin(); tour != tours->end(); tour++)
 			{
 				int length = Algorithm::calcTourCosts(*tour, graph.getAdjacencyMatrix());
+				totalCosts += length;
 				pheromones[0][(*tour->begin())->getId()] += 1 / (double) length;
 				for (std::vector<Node*>::const_iterator it1 = tour->begin(), it2 = it1 + 1; it2 != tour->end(); it1++, it2++)
 				{
@@ -125,6 +133,13 @@ void ACO::solve()
 						pheromones[(*it2)->getId()][0] += 1 / (double) length;
 				}
 			}
+
+			if (bestCost > totalCosts)
+			{
+				bestCost = totalCosts;
+				bestIdx = index;
+			}
+			index++;
 		}
 
 		//Evaporation
