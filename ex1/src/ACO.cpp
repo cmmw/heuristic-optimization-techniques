@@ -11,6 +11,7 @@
 #include <cstdlib>
 #include <numeric>
 #include <climits>
+#include <cassert>
 
 namespace tcbvrp
 {
@@ -60,7 +61,6 @@ void ACO::solve()
 	for (int t = 0; t < TIMESTEPS; t++)		//time steps
 	{
 		std::vector<std::vector<std::vector<Node*> > > solutions;
-		solutions.resize(ANTS);
 		for (int k = 0; k < ANTS; k++)		//ants
 		{
 			std::vector<std::vector<Node*> > tours;
@@ -69,7 +69,6 @@ void ACO::solve()
 			//create tour according to probabilities
 			while (true)
 			{
-
 				std::vector<double> p;
 				std::vector<Node*> tour;
 				Node* n0 = graph.getZeroNode();
@@ -115,6 +114,7 @@ void ACO::solve()
 
 			if (tours.size() <= (unsigned int) graph.getNumberOfVehicles() && tours.size() != 0)
 				solutions.push_back(tours);
+
 		}
 
 		//Update pheromones
@@ -191,7 +191,8 @@ std::vector<double> ACO::calcProbabilites(Node* node1, const std::vector<Node*>&
 
 	for (unsigned int n = 0; n < neighbors.size(); n++)
 	{
-		sum += (pow(pheromones[node1->getId()][neighbors[n]->getId()], ACO_ALPHA) * pow(visibility[node1->getId()][neighbors[n]->getId()], ACO_BETA));
+		if (!neighbors[n]->getVisited())
+			sum += (pow(pheromones[node1->getId()][neighbors[n]->getId()], ACO_ALPHA) * pow(visibility[node1->getId()][neighbors[n]->getId()], ACO_BETA));
 	}
 
 	for (unsigned int n = 0; n < neighbors.size(); n++)
