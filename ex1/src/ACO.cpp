@@ -32,12 +32,15 @@ ACO::ACO(Solution* solution, const Graph& graph) :
 		visibility[i].resize(graph.getAdjacencyMatrix()[i].size());
 		for (unsigned int j = 0; j < graph.getAdjacencyMatrix()[i].size(); j++)
 		{
-			pheromones[i][j] = INIT_PHERO;
 			if (i == j)
+			{
 				visibility[i][j] = 0;
-			else
+				pheromones[i][j] = 0;
+			} else
+			{
 				visibility[i][j] = 1 / (double) graph.getAdjacencyMatrix()[i][j];
-			std::cout << visibility[i][j] << std::endl;
+				pheromones[i][j] = INIT_PHERO;
+			}
 		}
 	}
 }
