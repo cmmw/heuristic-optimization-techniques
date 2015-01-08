@@ -80,17 +80,30 @@ void ACO::solve()
 					Node *n1, *n2;
 
 					p = calcProbabilites(n0, graph.getSupplyNodes());
+
 					idx = getBestNodeIdx(p);
 					if (idx != -1)
 					{
+
+
+
 						//choose next node according to p
 						n1 = graph.getSupplyNodes()[idx];
+
+						std::cout << "Is VISITED: " << n1->getVisited() << std::endl;
+						std::cout << "probability: " << p[idx] << std::endl;
+
 						//choose next node according to p
 						p = calcProbabilites(n1, graph.getDemandNodes());
 						idx = getBestNodeIdx(p);
+
 						if (idx != -1)
 						{
 							n2 = graph.getDemandNodes()[idx];
+
+							std::cout << "Is VISITED: " << n2->getVisited() << std::endl;
+							std::cout << "probability: " << p[idx] << std::endl;
+
 							length += graph.getAdjacencyMatrix()[n0->getId()][n1->getId()] + graph.getAdjacencyMatrix()[n1->getId()][n2->getId()];
 						}
 					}
@@ -204,7 +217,7 @@ int ACO::getBestNodeIdx(std::vector<double> probabilities)
 		return -1;
 	}
 
-	float p = (rand() / static_cast<float>(RAND_MAX)) * probability_sum;
+	double p = (rand() / static_cast<double>(RAND_MAX)) * probability_sum;
 	int current = 0;
 	while ((p -= probabilities[current]) > 0)
 	{
@@ -235,6 +248,14 @@ std::vector<double> ACO::calcProbabilites(Node* node1, const std::vector<Node*>&
 			p[n] = 0;							//set probability of invalid neighbors to 0, TODO check if tour length is violating constraint
 		} else
 		{
+			if (sum == 0) {
+				std::cout << "Visited: " << neighbors[n]->getVisited() << std::endl;
+				std::cout << "Pheromone: " << pheromones[node1->getId()][neighbors[n]->getId()] << std::endl;
+				std::cout << "Alpha: " << ACO_ALPHA << std::endl;
+				std::cout << "visibility: " << visibility[node1->getId()][neighbors[n]->getId()] << std::endl;
+				std::cout << "ACO_BETA" << ACO_BETA << std::endl;
+
+			}
 			p[n] = pow(pheromones[i][j], ACO_ALPHA) * pow(visibility[i][j], ACO_BETA) / sum;
 		}
 	}
