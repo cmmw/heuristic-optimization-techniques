@@ -22,6 +22,11 @@ Solution::~Solution()
 {
 }
 
+void Solution::addTours(const std::vector<std::vector<Node*> >& tours)
+{
+	this->tours = tours;
+}
+
 void Solution::addTour(const std::vector<Node*> &tour)
 {
 	tours.push_back(tour);
@@ -50,20 +55,22 @@ int Solution::getNumberOfTours() const
 void Solution::cleanEmptyTours()
 {
 	std::vector<std::vector<Node*> >::iterator tour = tours.begin();
-	while (tour != tours.end()) {
-		if (tour->empty()) {
+	while (tour != tours.end())
+	{
+		if (tour->empty())
+		{
 			tour = tours.erase(tour);
 		}
-		else {
+		else
+		{
 			tour++;
 		}
 	}
 
 	/*if (tours.back().size() == 0) {
-		tours.pop_back();
-	}*/
+	 tours.pop_back();
+	 }*/
 }
-
 
 void Solution::printSolution() const
 {

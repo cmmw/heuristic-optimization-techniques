@@ -20,6 +20,7 @@ public:
 	Solution(const std::vector<std::vector<int> >& costs);
 	virtual ~Solution();
 
+	void addTours(const std::vector<std::vector<Node*> >& tours);
 	void addTour(const std::vector<Node*> &tour);
 	std::vector<std::vector<Node*> >& getTours();
 	void setTours(const std::vector<std::vector<Node*> >& tours);

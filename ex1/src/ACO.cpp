@@ -10,6 +10,7 @@
 #include "ACO.h"
 #include <cstdlib>
 #include <numeric>
+#include <climits>
 
 namespace tcbvrp
 {
@@ -53,6 +54,8 @@ ACO::~ACO()
 
 void ACO::solve()
 {
+	std::vector<std::vector<Node*> > bestTours;
+	int bestCost = INT_MAX;
 
 	for (int t = 0; t < TIMESTEPS; t++)		//time steps
 	{
@@ -107,16 +110,13 @@ void ACO::solve()
 					break;
 			}
 
-			if (tours.size() <= graph.getNumberOfVehicles())
+			if (tours.size() <= (unsigned int) graph.getNumberOfVehicles())
 				solutions.push_back(tours);
 		}
 
 		//Update pheromones
 
 		//Reinforce used paths
-		int bestIdx = 0;
-		int bestCost = INT32_MAX;
-		int index = 0;
 
 		for (std::vector<std::vector<std::vector<Node*> > >::iterator tours = solutions.begin(); tours != solutions.end(); tours++)
 		{
@@ -137,9 +137,8 @@ void ACO::solve()
 			if (bestCost > totalCosts)
 			{
 				bestCost = totalCosts;
-				bestIdx = index;
+				//bestTours = tours;
 			}
-			index++;
 		}
 
 		//Evaporation
@@ -157,6 +156,8 @@ void ACO::solve()
 			}
 		}
 	}
+
+	this->solution->addTours(bestTours);
 }
 
 int ACO::getBestNodeIdx(std::vector<double> probabilities)
