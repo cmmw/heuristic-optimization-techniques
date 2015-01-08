@@ -178,7 +178,7 @@ void ACO::solve()
 				{
 					for (unsigned int j = 0; j < pheromones[i].size(); j++)
 					{
-						pheromones[i][j] = (1 - EVAP_RATE) + (EVAP_RATE) * INIT_PHERO;
+						pheromones[i][j] = (1 - EVAP_RATE) * pheromones[i][j];
 					}
 				}
 			}
