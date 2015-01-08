@@ -71,12 +71,12 @@ void ACO::solve()
 				std::vector<Node*> tour;
 				Node* n0 = graph.getZeroNode();
 				int length = 0;
+				int idx = 0;
 				//TODO: build tour and check if it is valid etc. etc. etc.
 				while (true)
 				{
 					Node *n1, *n2;
 
-					int idx;
 					p = calcProbabilites(n0, graph.getSupplyNodes());
 					idx = getBestNodeIdx(p);
 					if (idx != -1)
@@ -103,6 +103,8 @@ void ACO::solve()
 					n0 = n2;
 				}
 				tours.push_back(tour);
+				if (idx == -1)
+					break;
 			}
 			solutions.push_back(tours);
 		}
