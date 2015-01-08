@@ -76,17 +76,23 @@ void ACO::solve()
 				{
 					Node *n1, *n2;
 
-					//choose next node according to p
+					int idx;
 					p = calcProbabilites(n0, graph.getSupplyNodes());
-					n1 = graph.getSupplyNodes()[1];
-
-					//choose next node according to p
-					p = calcProbabilites(n1, graph.getDemandNodes());
-					n2 = graph.getDemandNodes()[1];
-
-					length += graph.getAdjacencyMatrix()[n0->getId()][n1->getId()] + graph.getAdjacencyMatrix()[n1->getId()][n2->getId()];
-
-					if ((unsigned int) (length + graph.getAdjacencyMatrix()[n2->getId()][0]) > graph.getGlobalTimeLimit())
+					idx = getBestNodeIdx(p);
+					if (idx != -1)
+					{
+						//choose next node according to p
+						n1 = graph.getSupplyNodes()[idx];
+						//choose next node according to p
+						p = calcProbabilites(n1, graph.getDemandNodes());
+						idx = getBestNodeIdx(p);
+						if (idx != -1)
+						{
+							n2 = graph.getDemandNodes()[idx];
+							length += graph.getAdjacencyMatrix()[n0->getId()][n1->getId()] + graph.getAdjacencyMatrix()[n1->getId()][n2->getId()];
+						}
+					}
+					if ((unsigned int) (length + graph.getAdjacencyMatrix()[n2->getId()][0]) > graph.getGlobalTimeLimit() || idx == -1)
 					{
 						break;
 					}
@@ -136,23 +142,24 @@ void ACO::solve()
 	}
 }
 
-
-int getBestNodeIdx(std::vector<double> probabilities) {
+int ACO::getBestNodeIdx(std::vector<double> probabilities)
+{
 	double probability_sum = std::accumulate(probabilities.begin(), probabilities.end(), 0.0);
-	if (probability_sum == 0.0) {
+	if (probability_sum == 0.0)
+	{
 		// Return -1 if all neighbours have probability 0, which means they are infeasible
 		return -1;
 	}
 
 	float p = (rand() / static_cast<float>(RAND_MAX)) * probability_sum;
 	int current = 0;
-	while ( (p -= probabilities[current]) > 0) {
-	    ++current;
+	while ((p -= probabilities[current]) > 0)
+	{
+		++current;
 	}
 
 	return current;
 }
-
 
 std::vector<double> ACO::calcProbabilites(Node* node1, const std::vector<Node*>& neighbors)
 {
