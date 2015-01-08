@@ -74,7 +74,6 @@ void ACO::solve()
 				Node* n0 = graph.getZeroNode();
 				int length = 0;
 				int idx = 0;
-				//TODO: build tour and check if it is valid etc. etc. etc.
 				while (true)
 				{
 					Node *n1, *n2;
@@ -190,6 +189,7 @@ void ACO::solve()
 					for (unsigned int j = 0; j < pheromones[i].size(); j++)
 					{
 						pheromones[i][j] *= (1 - EVAP_RATE);
+						pheromones[i][j] += 0.0001;
 					}
 				}
 			}
@@ -223,7 +223,6 @@ int ACO::getBestNodeIdx(std::vector<double> probabilities)
 	{
 		++current;
 	}
-
 	return current;
 }
 
@@ -245,7 +244,7 @@ std::vector<double> ACO::calcProbabilites(Node* node1, const std::vector<Node*>&
 		int j = neighbors[n]->getId();
 		if (neighbors[n]->getVisited())
 		{
-			p[n] = 0;							//set probability of invalid neighbors to 0, TODO check if tour length is violating constraint
+			p[n] = 0;
 		} else
 		{
 			if (sum == 0) {
