@@ -78,22 +78,40 @@ void ACO::solve()
 				{
 					Node *n1, *n2;
 
-					p = calcProbabilites(n0, graph.getSupplyNodes());
+					std::vector<Node*> validNeighbors;
+					for (std::vector<Node*>::const_iterator it = graph.getSupplyNodes().begin(); it != graph.getSupplyNodes().end(); it++)
+					{
+						if ((*it)->getVisited())
+							continue;
+						validNeighbors.push_back(*it);
+					}
+					p = calcProbabilites(n0, validNeighbors);
 
 					idx = getBestNodeIdx(p);
 					if (idx != -1)
 					{
-						assert(!graph.getSupplyNodes()[idx]->getVisited());
-						//choose next node according to p
-						n1 = graph.getSupplyNodes()[idx];
+						assert((unsigned int ) idx < validNeighbors.size());
+						assert(!validNeighbors[idx]->getVisited());
 
 						//choose next node according to p
-						p = calcProbabilites(n1, graph.getDemandNodes());
+						n1 = validNeighbors[idx];
+
+						//choose next node according to p
+						validNeighbors.clear();
+						for (std::vector<Node*>::const_iterator it = graph.getDemandNodes().begin(); it != graph.getDemandNodes().end(); it++)
+						{
+							if ((*it)->getVisited())
+								continue;
+							validNeighbors.push_back(*it);
+						}
+
+						p = calcProbabilites(n1, validNeighbors);
 						idx = getBestNodeIdx(p);
 						if (idx != -1)
 						{
-							assert(!graph.getDemandNodes()[idx]->getVisited());
-							n2 = graph.getDemandNodes()[idx];
+							assert((unsigned int ) idx < validNeighbors.size());
+							assert(!validNeighbors[idx]->getVisited());
+							n2 = validNeighbors[idx];
 							length += graph.getAdjacencyMatrix()[n0->getId()][n1->getId()] + graph.getAdjacencyMatrix()[n1->getId()][n2->getId()];
 						}
 					}
@@ -180,9 +198,9 @@ int ACO::getBestNodeIdx(std::vector<double> probabilities)
 		return -1;
 	}
 
-	float p = (rand() / static_cast<float>(RAND_MAX)) * probability_sum;
+	double p = (rand() / (double) (RAND_MAX)) * probability_sum;
 	int current = 0;
-	while ((p -= probabilities[current]) > 0.00001)
+	while ((p -= probabilities[current]) > 0.00000000001)
 	{
 		++current;
 	}
@@ -210,15 +228,6 @@ std::vector<double> ACO::calcProbabilites(Node* node1, const std::vector<Node*>&
 			p[n] = 0;
 		} else
 		{
-			if (sum == 0)
-			{
-				std::cout << "Visited: " << neighbors[n]->getVisited() << std::endl;
-				std::cout << "Pheromone: " << pheromones[node1->getId()][neighbors[n]->getId()] << std::endl;
-				std::cout << "Alpha: " << ACO_ALPHA << std::endl;
-				std::cout << "visibility: " << visibility[node1->getId()][neighbors[n]->getId()] << std::endl;
-				std::cout << "ACO_BETA" << ACO_BETA << std::endl;
-
-			}
 			p[n] = pow(pheromones[i][j], ACO_ALPHA) * pow(visibility[i][j], ACO_BETA) / sum;
 		}
 	}
