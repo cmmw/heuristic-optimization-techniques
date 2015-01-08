@@ -24,6 +24,7 @@ public:
 
 	/*Helper functions*/
 	static unsigned int calcTourCosts(const std::vector<Node*> &tour, const std::vector<std::vector<int> >& costs);
+
 	/*Sorts nodes in descending order corresponding to the costs in costRow*/
 	static void sortNeighborsByAscEdgeCosts(std::vector<Node*> &nodes, const std::vector<int>& costRow);
 	/*return random number between 0 and max*/
