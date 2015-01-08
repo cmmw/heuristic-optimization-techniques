@@ -289,5 +289,11 @@ void checkSolution(const Graph& graph, Solution& sol)
 			exit(1);
 		}
 	}
+
+	if (sol.getNumberOfTours() > graph.getNumberOfVehicles())
+	{
+		std::cerr << "Solution infeasible: contains too many tours!" << std::endl;
+		exit(1);
+	}
 //	std::cerr << "Solution feasible" << std::endl;
 }
