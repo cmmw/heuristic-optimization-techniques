@@ -248,7 +248,7 @@ void runGRASP(Solution* sol, const Graph& graph)
 
 void runACO(Solution* sol, const Graph& graph)
 {
-	LOG << "Running GRASP";
+	LOG << "Running ACO";
 	ACO aco(sol, graph);
 	aco.solve();
 }
