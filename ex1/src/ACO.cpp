@@ -83,16 +83,16 @@ void ACO::solve()
 					idx = getBestNodeIdx(p);
 					if (idx != -1)
 					{
-
+						assert(!graph.getSupplyNodes()[idx]->getVisited());
 						//choose next node according to p
 						n1 = graph.getSupplyNodes()[idx];
 
 						//choose next node according to p
 						p = calcProbabilites(n1, graph.getDemandNodes());
 						idx = getBestNodeIdx(p);
-
 						if (idx != -1)
 						{
+							assert(!graph.getDemandNodes()[idx]->getVisited());
 							n2 = graph.getDemandNodes()[idx];
 							length += graph.getAdjacencyMatrix()[n0->getId()][n1->getId()] + graph.getAdjacencyMatrix()[n1->getId()][n2->getId()];
 						}
@@ -182,7 +182,7 @@ int ACO::getBestNodeIdx(std::vector<double> probabilities)
 
 	float p = (rand() / static_cast<float>(RAND_MAX)) * probability_sum;
 	int current = 0;
-	while ((p -= probabilities[current]) > 0)
+	while ((p -= probabilities[current]) > 0.00001)
 	{
 		++current;
 	}
