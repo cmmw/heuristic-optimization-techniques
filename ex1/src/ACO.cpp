@@ -137,7 +137,7 @@ void ACO::solve()
 			if (bestCost > totalCosts)
 			{
 				bestCost = totalCosts;
-				//bestTours = tours;
+				bestTours = *tours;
 			}
 		}
 
