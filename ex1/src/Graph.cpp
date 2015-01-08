@@ -291,7 +291,7 @@ const std::vector<Node*>& Graph::getSupplyNodes() const
 	return supplyNodes;
 }
 
-const Node* Graph::getZeroNode() const
+Node* Graph::getZeroNode() const
 {
 	return zeroNode;
 }
@@ -310,6 +310,7 @@ void Graph::unvisitNodes() const
 {
 	for (std::vector<Node*>::const_iterator it = nodes.begin(); it != nodes.end(); it++)
 		(*it)->setVisited(false);
+	zeroNode->setVisited(false);
 }
 
 } /* namespace tcbvrp */

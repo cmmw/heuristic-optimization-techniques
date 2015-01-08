@@ -47,7 +47,7 @@ public:
 
 	const std::vector<Node*>& getSupplyNodes() const;
 
-	const Node* getZeroNode() const;
+	Node* getZeroNode() const;
 
 	int getMaxCosts() const;
 

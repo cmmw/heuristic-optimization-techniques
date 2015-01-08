@@ -12,6 +12,7 @@
 #include "LNS.h"
 #include "RandConstHeu.h"
 #include "GRASP.h"
+#include "ACO.h"
 #include "Logger.h"
 
 using namespace tcbvrp;
@@ -29,6 +30,7 @@ void runConstHeu(Solution* sol, const Graph& graph);
 void runRandConstHeu(Solution* sol, const Graph& graph);
 void runLNS(Solution* sol, const Graph& graph);
 void runGRASP(Solution* sol, const Graph& graph);
+void runACO(Solution* sol, const Graph& graph);
 void signalHandler(int signum);
 void checkSolution(const Graph& graph, Solution& sol);
 
@@ -187,13 +189,17 @@ int main(int argc, char* argv[])
 	case 2:
 		runGRASP(&sol, graph);
 		break;
+	case 3:
+		runACO(&sol, graph);
+		break;
 	default:
-		runConstHeu(&sol, graph);
+		std::cerr << "Wrong algorithm" << std::endl;
+		exit(1);
 	}
 
 	clock_t end = clock();
 
-	checkSolution(graph, sol);
+	//checkSolution(graph, sol);
 
 	/*Print results*/
 	sol.printSolution();
@@ -207,11 +213,6 @@ int main(int argc, char* argv[])
 	// only print total costs for irace
 //	std::cout << sol.getTotalCosts() << std::endl;
 
-	for (std::vector<Node*>::const_iterator it = graph.getDemandNodes().begin(); it != graph.getDemandNodes().end(); it++)
-	{
-		if (!(*it)->getVisited())
-			std::cerr << "Some demand nodes are unvisited!";
-	}
 	return 0;
 }
 
@@ -243,6 +244,13 @@ void runGRASP(Solution* sol, const Graph& graph)
 	LOG << "Running GRASP";
 	GRASP grasp(sol, graph);
 	grasp.solve();
+}
+
+void runACO(Solution* sol, const Graph& graph)
+{
+	LOG << "Running GRASP";
+	ACO aco(sol, graph);
+	aco.solve();
 }
 
 void signalHandler(int signum)
