@@ -18,8 +18,8 @@ const int ANTS = 40;
 const int TIMESTEPS = 100;
 const double EVAP_RATE = 0.9;
 
-const double ACO_ALPHA = 0.5;
-const double ACO_BETA = 0.5;
+const double ACO_ALPHA = 1;
+const double ACO_BETA = 1;
 
 ACO::ACO(Solution* solution, const Graph& graph) :
 		Algorithm(solution, graph)
