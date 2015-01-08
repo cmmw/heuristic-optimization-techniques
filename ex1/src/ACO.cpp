@@ -58,49 +58,70 @@ void ACO::solve()
 		solutions.resize(ANTS);
 		for (int k = 0; k < ANTS; k++)		//ants
 		{
-			std::vector<Node*> tour;
+			std::vector<std::vector<Node*> > tours;
 			graph.unvisitNodes();
 
 			//create tour according to probabilities
-			Node* n = graph.getZeroNode();
 			while (true)
 			{
+
 				std::vector<double> p;
-
+				std::vector<Node*> tour;
+				Node* n0 = graph.getZeroNode();
+				int length = 0;
 				//TODO: build tour and check if it is valid etc. etc. etc.
+				while (true)
+				{
+					Node *n1, *n2;
 
-				//choose next node according to p
-				p = calcProbabilites(n, graph.getSupplyNodes());
-				n = graph.getSupplyNodes()[1];
-				tour.push_back(n);
+					//choose next node according to p
+					p = calcProbabilites(n0, graph.getSupplyNodes());
+					n1 = graph.getSupplyNodes()[1];
 
-				//choose next node according to p
-				p = calcProbabilites(n, graph.getDemandNodes());
-				n = graph.getSupplyNodes()[1];
-				tour.push_back(n);
+					//choose next node according to p
+					p = calcProbabilites(n1, graph.getDemandNodes());
+					n2 = graph.getDemandNodes()[1];
 
+					length += graph.getAdjacencyMatrix()[n0->getId()][n1->getId()] + graph.getAdjacencyMatrix()[n1->getId()][n2->getId()];
+
+					if ((unsigned int) (length + graph.getAdjacencyMatrix()[n2->getId()][0]) > graph.getGlobalTimeLimit())
+					{
+						break;
+					}
+					tour.push_back(n1);
+					tour.push_back(n2);
+					n1->setVisited(true);
+					n2->setVisited(true);
+					n0 = n2;
+				}
+				tours.push_back(tour);
 			}
+			solutions.push_back(tours);
 		}
 
 		//Update pheromones
+
+		//Reinforce used paths
+		for (std::vector<std::vector<std::vector<Node*> > >::iterator tours = solutions.begin(); tours != solutions.end(); tours++)
+		{
+			for (std::vector<std::vector<Node*> >::iterator tour = tours->begin(); tour != tours->end(); tour++)
+			{
+				int length = Algorithm::calcTourCosts(*tour, graph.getAdjacencyMatrix());
+				pheromones[0][(*tour->begin())->getId()] += 1 / (double) length;
+				for (std::vector<Node*>::const_iterator it1 = tour->begin(), it2 = it1 + 1; it2 != tour->end(); it1++, it2++)
+				{
+					pheromones[(*it1)->getId()][(*it2)->getId()] += 1 / (double) length;
+					if (it2 + 1 == tour->end())
+						pheromones[(*it2)->getId()][0] += 1 / (double) length;
+				}
+			}
+		}
+
+		//Evaporation
 		for (unsigned int i = 0; i < graph.getAdjacencyMatrix().size(); i++)
 		{
 			for (unsigned int j = 0; j < graph.getAdjacencyMatrix()[i].size(); j++)
 			{
-				//Reinforce used paths
-				for (std::vector<std::vector<std::vector<Node*> > >::iterator tours = solutions.begin(); tours != solutions.end(); tours++)
-				{
-					for (std::vector<std::vector<Node*> >::iterator tour = tours->begin(); tour != tours->end(); tour++)
-					{
-						int length = Algorithm::calcTourCosts(*tour, graph.getAdjacencyMatrix());
-						for (std::vector<Node*>::const_iterator it1 = tour->begin(), it2 = it1 + 1; it2 != tour->end(); it1++, it2++)
-						{
-							pheromones[(*it1)->getId()][(*it2)->getId()] += 1 / (double) length;
-						}
-					}
-				}
-
-				//Evaporation
 				for (unsigned int i = 0; i < pheromones.size(); i++)
 				{
 					for (unsigned int j = 0; j < pheromones[i].size(); j++)
