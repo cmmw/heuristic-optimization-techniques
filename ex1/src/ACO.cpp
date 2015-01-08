@@ -106,14 +106,36 @@ void ACO::solve()
 				}
 
 				if (tour.size() != 0)
+				{
 					tours.push_back(tour);
+				}
 
 				if (idx == -1)
 					break;
 			}
 
 			if (tours.size() <= (unsigned int) graph.getNumberOfVehicles() && tours.size() != 0)
+			{
 				solutions.push_back(tours);
+
+				int c = 0;
+				int totalCosts = 0;
+				for (std::vector<std::vector<Node*> >::const_iterator tour = tours.begin(); tour != tours.end(); tour++)
+				{
+					c++;
+					std::cout << c << ". Tour:" << std::endl;
+					for (std::vector<Node*>::const_iterator it = tour->begin(); it != tour->end(); it++)
+					{
+						std::string type = ((*it)->getType() == Node::SUPPLY) ? "S" : "D";
+						std::cout << (*it)->getId() << type << ", ";
+					}
+					int tourCosts = Algorithm::calcTourCosts(*tour, graph.getAdjacencyMatrix());
+					std::cout << "Costs: " << tourCosts << std::endl;
+					std::cout << "" << std::endl;
+					totalCosts += tourCosts;
+				}
+				std::cout << "Total costs: " << totalCosts << std::endl;
+			}
 
 		}
 
@@ -123,6 +145,7 @@ void ACO::solve()
 
 		for (std::vector<std::vector<std::vector<Node*> > >::iterator tours = solutions.begin(); tours != solutions.end(); tours++)
 		{
+			///std::cout << "Tours size: " << tours->size() << std::endl;
 			int totalCosts = 0;
 			for (std::vector<std::vector<Node*> >::iterator tour = tours->begin(); tour != tours->end(); tour++)
 			{
@@ -165,7 +188,16 @@ void ACO::solve()
 
 int ACO::getBestNodeIdx(std::vector<double> probabilities)
 {
+	std::cout << "probabilities: " << std::endl;
+
+	for (std::vector<double>::iterator it = probabilities.begin(); it != probabilities.end(); it++)
+	{
+		std::cout << *it << " ";
+	}
+
 	double probability_sum = std::accumulate(probabilities.begin(), probabilities.end(), 0.0);
+	std::cout << "probability sum: " << probability_sum << std::endl;
+
 	if (probability_sum == 0.0)
 	{
 		// Return -1 if all neighbours have probability 0, which means they are infeasible
