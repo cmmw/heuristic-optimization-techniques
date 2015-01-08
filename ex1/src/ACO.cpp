@@ -84,13 +84,8 @@ void ACO::solve()
 					if (idx != -1)
 					{
 
-
-
 						//choose next node according to p
 						n1 = graph.getSupplyNodes()[idx];
-
-						std::cout << "Is VISITED: " << n1->getVisited() << std::endl;
-						std::cout << "probability: " << p[idx] << std::endl;
 
 						//choose next node according to p
 						p = calcProbabilites(n1, graph.getDemandNodes());
@@ -99,10 +94,6 @@ void ACO::solve()
 						if (idx != -1)
 						{
 							n2 = graph.getDemandNodes()[idx];
-
-							std::cout << "Is VISITED: " << n2->getVisited() << std::endl;
-							std::cout << "probability: " << p[idx] << std::endl;
-
 							length += graph.getAdjacencyMatrix()[n0->getId()][n1->getId()] + graph.getAdjacencyMatrix()[n1->getId()][n2->getId()];
 						}
 					}
@@ -129,24 +120,6 @@ void ACO::solve()
 			if (tours.size() <= (unsigned int) graph.getNumberOfVehicles() && tours.size() != 0)
 			{
 				solutions.push_back(tours);
-
-				int c = 0;
-				int totalCosts = 0;
-				for (std::vector<std::vector<Node*> >::const_iterator tour = tours.begin(); tour != tours.end(); tour++)
-				{
-					c++;
-					std::cout << c << ". Tour:" << std::endl;
-					for (std::vector<Node*>::const_iterator it = tour->begin(); it != tour->end(); it++)
-					{
-						std::string type = ((*it)->getType() == Node::SUPPLY) ? "S" : "D";
-						std::cout << (*it)->getId() << type << ", ";
-					}
-					int tourCosts = Algorithm::calcTourCosts(*tour, graph.getAdjacencyMatrix());
-					std::cout << "Costs: " << tourCosts << std::endl;
-					std::cout << "" << std::endl;
-					totalCosts += tourCosts;
-				}
-				std::cout << "Total costs: " << totalCosts << std::endl;
 			}
 
 		}
@@ -157,7 +130,6 @@ void ACO::solve()
 
 		for (std::vector<std::vector<std::vector<Node*> > >::iterator tours = solutions.begin(); tours != solutions.end(); tours++)
 		{
-			///std::cout << "Tours size: " << tours->size() << std::endl;
 			int totalCosts = 0;
 			for (std::vector<std::vector<Node*> >::iterator tour = tours->begin(); tour != tours->end(); tour++)
 			{
@@ -188,8 +160,7 @@ void ACO::solve()
 				{
 					for (unsigned int j = 0; j < pheromones[i].size(); j++)
 					{
-						pheromones[i][j] *= (1 - EVAP_RATE);
-						pheromones[i][j] += 0.0001;
+						pheromones[i][j] = (1 - EVAP_RATE) + (EVAP_RATE) * INIT_PHERO;
 					}
 				}
 			}
@@ -201,15 +172,7 @@ void ACO::solve()
 
 int ACO::getBestNodeIdx(std::vector<double> probabilities)
 {
-	std::cout << "probabilities: " << std::endl;
-
-	for (std::vector<double>::iterator it = probabilities.begin(); it != probabilities.end(); it++)
-	{
-		std::cout << *it << " ";
-	}
-
 	double probability_sum = std::accumulate(probabilities.begin(), probabilities.end(), 0.0);
-	std::cout << "probability sum: " << probability_sum << std::endl;
 
 	if (probability_sum == 0.0)
 	{
@@ -217,7 +180,7 @@ int ACO::getBestNodeIdx(std::vector<double> probabilities)
 		return -1;
 	}
 
-	double p = (rand() / static_cast<double>(RAND_MAX)) * probability_sum;
+	float p = (rand() / static_cast<float>(RAND_MAX)) * probability_sum;
 	int current = 0;
 	while ((p -= probabilities[current]) > 0)
 	{
@@ -247,7 +210,8 @@ std::vector<double> ACO::calcProbabilites(Node* node1, const std::vector<Node*>&
 			p[n] = 0;
 		} else
 		{
-			if (sum == 0) {
+			if (sum == 0)
+			{
 				std::cout << "Visited: " << neighbors[n]->getVisited() << std::endl;
 				std::cout << "Pheromone: " << pheromones[node1->getId()][neighbors[n]->getId()] << std::endl;
 				std::cout << "Alpha: " << ACO_ALPHA << std::endl;
