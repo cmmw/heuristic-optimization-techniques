@@ -105,12 +105,15 @@ void ACO::solve()
 					n2->setVisited(true);
 					n0 = n2;
 				}
-				tours.push_back(tour);
+
+				if (tour.size() != 0)
+					tours.push_back(tour);
+
 				if (idx == -1)
 					break;
 			}
 
-			if (tours.size() <= (unsigned int) graph.getNumberOfVehicles())
+			if (tours.size() <= (unsigned int) graph.getNumberOfVehicles() && tours.size() != 0)
 				solutions.push_back(tours);
 		}
 
