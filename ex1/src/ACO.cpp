@@ -54,8 +54,8 @@ void ACO::solve()
 
 	for (int t = 0; t < TIMESTEPS; t++)		//time steps
 	{
-		std::vector<std::vector<Node*> > tours;
-		tours.resize(ANTS);
+		std::vector<std::vector<std::vector<Node*> > > solutions;
+		solutions.resize(ANTS);
 		for (int k = 0; k < ANTS; k++)		//ants
 		{
 			std::vector<Node*> tour;
@@ -88,13 +88,15 @@ void ACO::solve()
 			for (unsigned int j = 0; j < graph.getAdjacencyMatrix()[i].size(); j++)
 			{
 				//Reinforce used paths
-
-				for (std::vector<std::vector<Node*> >::iterator tour = tours.begin(); tour != tours.end(); tour++)
+				for (std::vector<std::vector<std::vector<Node*> > >::iterator tours = solutions.begin(); tours != solutions.end(); tours++)
 				{
-					int length = Algorithm::calcTourCosts(*tour, graph.getAdjacencyMatrix());
-					for (std::vector<Node*>::const_iterator it1 = tour->begin(), it2 = it1 + 1; it2 != tour->end(); it1++, it2++)
+					for (std::vector<std::vector<Node*> >::iterator tour = tours->begin(); tour != tours->end(); tour++)
 					{
-						pheromones[(*it1)->getId()][(*it2)->getId()] += 1 / (double) length;
+						int length = Algorithm::calcTourCosts(*tour, graph.getAdjacencyMatrix());
+						for (std::vector<Node*>::const_iterator it1 = tour->begin(), it2 = it1 + 1; it2 != tour->end(); it1++, it2++)
+						{
+							pheromones[(*it1)->getId()][(*it2)->getId()] += 1 / (double) length;
+						}
 					}
 				}
 
