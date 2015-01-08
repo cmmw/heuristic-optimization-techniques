@@ -8,6 +8,8 @@
 #include <iostream>
 #include <cmath>
 #include "ACO.h"
+#include <cstdlib>
+#include <numeric>
 
 namespace tcbvrp
 {
@@ -133,6 +135,24 @@ void ACO::solve()
 		}
 	}
 }
+
+
+int getBestNodeIdx(std::vector<double> probabilities) {
+	double probability_sum = std::accumulate(probabilities.begin(), probabilities.end(), 0.0);
+	if (probability_sum == 0.0) {
+		// Return -1 if all neighbours have probability 0, which means they are infeasible
+		return -1;
+	}
+
+	float p = (rand() / static_cast<float>(RAND_MAX)) * probability_sum;
+	int current = 0;
+	while ( (p -= probabilities[current]) > 0) {
+	    ++current;
+	}
+
+	return current;
+}
+
 
 std::vector<double> ACO::calcProbabilites(Node* node1, const std::vector<Node*>& neighbors)
 {
