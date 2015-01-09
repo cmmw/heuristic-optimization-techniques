@@ -18,8 +18,8 @@ namespace tcbvrp
 
 const double INIT_PHERO = 1;
 
-const int ANTS = 50;
-const int TIMESTEPS = 40;
+const int ANTS = 100;
+const int TIMESTEPS = 50;
 const double EVAP_RATE = 0.2;
 
 const double ACO_ALPHA = 1;
@@ -59,7 +59,6 @@ void ACO::solve()
 {
 	std::vector<std::vector<Node*> > bestTours;
 	int bestCost = INT_MAX;
-	int counter = 0;
 	for (int t = 0; t < TIMESTEPS; t++)		//time steps
 	{
 		std::vector<std::vector<std::vector<Node*> > > solutions;
