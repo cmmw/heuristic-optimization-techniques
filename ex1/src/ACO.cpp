@@ -16,6 +16,7 @@
 namespace tcbvrp
 {
 
+// Initial value for all pheromones
 const double INIT_PHERO = 1;
 
 const int ANTS = 100;
@@ -25,11 +26,20 @@ const double EVAP_RATE = 0.2;
 const double ACO_ALPHA = 1;
 const double ACO_BETA = 1;
 
+
+// This flag control the use of special pheromone treatment
+// if set to true, multiple matrices will be set up, that
+// store pheromone values for each subtour. If set to false
+// every subtour uses the same values and only one matrix
+// is used for the storing of pheromone values
 bool usePh2 = false;
 
 ACO::ACO(Solution* solution, const Graph& graph) :
 		Algorithm(solution, graph)
 {
+	// Initializes pheremone and visibilty values for all edges
+	// pheromones are currently set to INIT_PHERO, visibility is the reverse of the edge costs
+
 	pheromones.resize(graph.getAdjacencyMatrix().size());
 	visibility.resize(graph.getAdjacencyMatrix().size());
 	for (unsigned int i = 0; i < graph.getAdjacencyMatrix().size(); i++)
@@ -57,10 +67,14 @@ ACO::~ACO()
 
 void ACO::solve()
 {
+	// stores the overall best solution (includes multiple tours)
 	std::vector<std::vector<Node*> > bestTours;
+
 	int bestCost = INT_MAX;
 	for (int t = 0; t < TIMESTEPS; t++)		//time steps
 	{
+
+		// stores the generated solution for each ant
 		std::vector<std::vector<std::vector<Node*> > > solutions;
 		for (int k = 0; k < ANTS; k++)		//ants
 		{
@@ -69,7 +83,8 @@ void ACO::solve()
 			graph.unvisitNodes();
 
 			//create tour according to probabilities
-			while (true)
+			int demandNodesLeft = graph.getDemandNodes().size();
+			while (demandNodesLeft > 0)
 			{
 				std::vector<double> p;
 				std::vector<Node*> tour;
@@ -85,22 +100,31 @@ void ACO::solve()
 					}
 				}
 
-				while (true)
+				bool noValidNeighboursLeft = false;
+
+				while (!noValidNeighboursLeft)
 				{
 					Node *n1, *n2;
 
 					std::vector<Node*> validNeighbors;
 					for (std::vector<Node*>::const_iterator it = graph.getSupplyNodes().begin(); it != graph.getSupplyNodes().end(); it++)
 					{
-						if ((*it)->getVisited())
-							continue;
-						validNeighbors.push_back(*it);
+						if (!(*it)->getVisited()) {
+							validNeighbors.push_back(*it);
+						}
 					}
 					p = calcProbabilites(n0, validNeighbors, tourNr);
 
 					idx = getBestNodeIdx(p);
+
+					// If idx is -1 it means that probability of all the validNeighbours is zero
+					// which means that all of them are visited already, there is no possibility
+					// to go on with this tour
 					if (idx != -1)
 					{
+
+						// this assertion makes sure that none of the valid neighbours is visited,
+						// some bugs could violate this assertion
 						assert((unsigned int ) idx < validNeighbors.size());
 						assert(!validNeighbors[idx]->getVisited());
 
@@ -111,9 +135,9 @@ void ACO::solve()
 						validNeighbors.clear();
 						for (std::vector<Node*>::const_iterator it = graph.getDemandNodes().begin(); it != graph.getDemandNodes().end(); it++)
 						{
-							if ((*it)->getVisited())
-								continue;
-							validNeighbors.push_back(*it);
+							if (!(*it)->getVisited()) {
+								validNeighbors.push_back(*it);
+							}
 						}
 
 						p = calcProbabilites(n1, validNeighbors, tourNr);
@@ -122,20 +146,24 @@ void ACO::solve()
 						{
 							assert((unsigned int ) idx < validNeighbors.size());
 							assert(!validNeighbors[idx]->getVisited());
+
 							n2 = validNeighbors[idx];
 							length += graph.getAdjacencyMatrix()[n0->getId()][n1->getId()] + graph.getAdjacencyMatrix()[n1->getId()][n2->getId()];
 						}
 					}
-					if ((unsigned int) (length + graph.getAdjacencyMatrix()[n2->getId()][0]) > graph.getGlobalTimeLimit() || idx == -1)
+					if (idx == -1 || (unsigned int) (length + graph.getAdjacencyMatrix()[n2->getId()][0]) > graph.getGlobalTimeLimit())
 					{
 						tourNr++;
-						break;
+						noValidNeighboursLeft = true;
 					}
-					tour.push_back(n1);
-					tour.push_back(n2);
-					n1->setVisited(true);
-					n2->setVisited(true);
-					n0 = n2;
+					else {
+						tour.push_back(n1);
+						tour.push_back(n2);
+						demandNodesLeft--;
+						n1->setVisited(true);
+						n2->setVisited(true);
+						n0 = n2;
+					}
 				}
 
 				if (tour.size() != 0)
@@ -143,10 +171,9 @@ void ACO::solve()
 					tours.push_back(tour);
 				}
 
-				if (idx == -1)
-					break;
 			}
 
+			// push the tour only if it is valid
 			if (tours.size() <= (unsigned int) graph.getNumberOfVehicles() && tours.size() != 0)
 			{
 				solutions.push_back(tours);
