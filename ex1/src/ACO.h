@@ -22,11 +22,12 @@ public:
 
 private:
 	std::vector<std::vector<double> > pheromones;
+	std::vector<std::vector<std::vector<double> > > ph2;
 	std::vector<std::vector<double> > visibility;
 
 	int getBestNodeIdx(std::vector<double> probabilities);
 
-	std::vector<double> calcProbabilites(Node* node1, const std::vector<Node*>& neighbors);
+	std::vector<double> calcProbabilites(Node* node1, const std::vector<Node*>& neighbors, unsigned int tourNr);
 };
 
 } /* namespace tcbvrp */
