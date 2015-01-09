@@ -18,14 +18,14 @@ namespace tcbvrp
 
 const double INIT_PHERO = 1;
 
-const int ANTS = 800;
+const int ANTS = 50;
 const int TIMESTEPS = 40;
 const double EVAP_RATE = 0.2;
 
 const double ACO_ALPHA = 1;
 const double ACO_BETA = 1;
 
-bool usePh2 = true;
+bool usePh2 = false;
 
 ACO::ACO(Solution* solution, const Graph& graph) :
 		Algorithm(solution, graph)
@@ -59,7 +59,7 @@ void ACO::solve()
 {
 	std::vector<std::vector<Node*> > bestTours;
 	int bestCost = INT_MAX;
-
+	int counter = 0;
 	for (int t = 0; t < TIMESTEPS; t++)		//time steps
 	{
 		std::vector<std::vector<std::vector<Node*> > > solutions;
@@ -200,33 +200,20 @@ void ACO::solve()
 		//Evaporation
 		for (unsigned int i = 0; i < graph.getAdjacencyMatrix().size(); i++)
 		{
-
 			for (unsigned int j = 0; j < graph.getAdjacencyMatrix()[i].size(); j++)
 			{
-
 				if (usePh2)
 				{
 					for (unsigned int t = 0; t < ph2.size(); t++)
 					{
-						for (unsigned int i = 0; i < ph2[t].size(); i++)
-						{
-							for (unsigned int j = 0; j < ph2[t][i].size(); j++)
-							{
-								ph2[t][i][j] = (1 - EVAP_RATE) * ph2[t][i][j];
-							}
-						}
+						ph2[t][i][j] = (1 - EVAP_RATE) * ph2[t][i][j];
 					}
 				} else
 				{
-					for (unsigned int i = 0; i < pheromones.size(); i++)
-					{
-						for (unsigned int j = 0; j < pheromones[i].size(); j++)
-						{
-							pheromones[i][j] = (1 - EVAP_RATE) * pheromones[i][j];
-						}
-					}
+					pheromones[i][j] = (1 - EVAP_RATE) * pheromones[i][j];
 				}
 			}
+
 		}
 	}
 
