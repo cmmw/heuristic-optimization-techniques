@@ -26,13 +26,12 @@ const double EVAP_RATE = 0.2;
 const double ACO_ALPHA = 1;
 const double ACO_BETA = 1;
 
-
 // This flag control the use of special pheromone treatment
 // if set to true, multiple matrices will be set up, that
 // store pheromone values for each subtour. If set to false
 // every subtour uses the same values and only one matrix
 // is used for the storing of pheromone values
-bool usePh2 = false;
+char phFlag = 'a';
 
 ACO::ACO(Solution* solution, const Graph& graph) :
 		Algorithm(solution, graph)
@@ -92,7 +91,7 @@ void ACO::solve()
 				int length = 0;
 				int idx = 0;
 
-				if (usePh2)
+				if (phFlag == 'b')
 				{
 					if (ph2.size() < (unsigned int) tourNr + 1)
 					{
@@ -109,7 +108,8 @@ void ACO::solve()
 					std::vector<Node*> validNeighbors;
 					for (std::vector<Node*>::const_iterator it = graph.getSupplyNodes().begin(); it != graph.getSupplyNodes().end(); it++)
 					{
-						if (!(*it)->getVisited()) {
+						if (!(*it)->getVisited())
+						{
 							validNeighbors.push_back(*it);
 						}
 					}
@@ -135,7 +135,8 @@ void ACO::solve()
 						validNeighbors.clear();
 						for (std::vector<Node*>::const_iterator it = graph.getDemandNodes().begin(); it != graph.getDemandNodes().end(); it++)
 						{
-							if (!(*it)->getVisited()) {
+							if (!(*it)->getVisited())
+							{
 								validNeighbors.push_back(*it);
 							}
 						}
@@ -156,7 +157,8 @@ void ACO::solve()
 						tourNr++;
 						noValidNeighboursLeft = true;
 					}
-					else {
+					else
+					{
 						tour.push_back(n1);
 						tour.push_back(n2);
 						demandNodesLeft--;
@@ -183,6 +185,26 @@ void ACO::solve()
 
 		//Update pheromones
 
+		//Evaporation
+		for (unsigned int i = 0; i < graph.getAdjacencyMatrix().size(); i++)
+		{
+			for (unsigned int j = 0; j < graph.getAdjacencyMatrix()[i].size(); j++)
+			{
+				switch (phFlag)
+				{
+				case 'a':
+					pheromones[i][j] = (1 - EVAP_RATE) * pheromones[i][j];
+					break;
+				case 'b':
+					for (unsigned int t = 0; t < ph2.size(); t++)
+					{
+						ph2[t][i][j] = (1 - EVAP_RATE) * ph2[t][i][j];
+					}
+					break;
+				}
+			}
+		}
+
 		//Reinforce used paths
 		for (std::vector<std::vector<std::vector<Node*> > >::iterator tours = solutions.begin(); tours != solutions.end(); tours++)
 		{
@@ -193,24 +215,40 @@ void ACO::solve()
 				int length = Algorithm::calcTourCosts(*tour, graph.getAdjacencyMatrix());
 				totalCosts += length;
 
-				if (usePh2)
-					ph2[tourNr][0][(*tour->begin())->getId()] += 1 / (double) length;
-				else
+				switch (phFlag)
+				{
+				case 'a':
 					pheromones[0][(*tour->begin())->getId()] += 1 / (double) length;
+					break;
+				case 'b':
+					ph2[tourNr][0][(*tour->begin())->getId()] += 1 / (double) length;
+					break;
+				}
 
 				for (std::vector<Node*>::const_iterator it1 = tour->begin(), it2 = it1 + 1; it2 != tour->end(); it1++, it2++)
 				{
-					if (usePh2)
-						ph2[tourNr][(*it1)->getId()][(*it2)->getId()] += 1 / (double) length;
-					else
+					switch (phFlag)
+					{
+					case 'a':
 						pheromones[(*it1)->getId()][(*it2)->getId()] += 1 / (double) length;
+						break;
+					case 'b':
+						ph2[tourNr][(*it1)->getId()][(*it2)->getId()] += 1 / (double) length;
+						break;
+					}
 
 					if (it2 + 1 == tour->end())
 					{
-						if (usePh2)
-							ph2[tourNr][(*it2)->getId()][0] += 1 / (double) length;
-						else
+						switch (phFlag)
+						{
+						case 'a':
 							pheromones[(*it2)->getId()][0] += 1 / (double) length;
+							break;
+						case 'b':
+							ph2[tourNr][(*it2)->getId()][0] += 1 / (double) length;
+							break;
+						}
+
 					}
 				}
 				tourNr++;
@@ -221,25 +259,6 @@ void ACO::solve()
 				bestCost = totalCosts;
 				bestTours = *tours;
 			}
-		}
-
-		//Evaporation
-		for (unsigned int i = 0; i < graph.getAdjacencyMatrix().size(); i++)
-		{
-			for (unsigned int j = 0; j < graph.getAdjacencyMatrix()[i].size(); j++)
-			{
-				if (usePh2)
-				{
-					for (unsigned int t = 0; t < ph2.size(); t++)
-					{
-						ph2[t][i][j] = (1 - EVAP_RATE) * ph2[t][i][j];
-					}
-				} else
-				{
-					pheromones[i][j] = (1 - EVAP_RATE) * pheromones[i][j];
-				}
-			}
-
 		}
 	}
 
@@ -276,10 +295,15 @@ std::vector<double> ACO::calcProbabilites(Node* node1, const std::vector<Node*>&
 	{
 		if (neighbors[n]->getVisited())
 			continue;
-		if (usePh2)
-			sum += (pow(ph2[tourNr][node1->getId()][neighbors[n]->getId()], ACO_ALPHA) * pow(visibility[node1->getId()][neighbors[n]->getId()], ACO_BETA));
-		else
+		switch (phFlag)
+		{
+		case 'a':
 			sum += (pow(pheromones[node1->getId()][neighbors[n]->getId()], ACO_ALPHA) * pow(visibility[node1->getId()][neighbors[n]->getId()], ACO_BETA));
+			break;
+		case 'b':
+			sum += (pow(ph2[tourNr][node1->getId()][neighbors[n]->getId()], ACO_ALPHA) * pow(visibility[node1->getId()][neighbors[n]->getId()], ACO_BETA));
+			break;
+		}
 	}
 
 	for (unsigned int n = 0; n < neighbors.size(); n++)
@@ -290,13 +314,17 @@ std::vector<double> ACO::calcProbabilites(Node* node1, const std::vector<Node*>&
 			p[n] = 0;
 		} else
 		{
-			if (usePh2)
-				p[n] = pow(ph2[tourNr][i][j], ACO_ALPHA) * pow(visibility[i][j], ACO_BETA) / sum;
-			else
+			switch (phFlag)
+			{
+			case 'a':
 				p[n] = pow(pheromones[i][j], ACO_ALPHA) * pow(visibility[i][j], ACO_BETA) / sum;
+				break;
+			case 'b':
+				p[n] = pow(ph2[tourNr][i][j], ACO_ALPHA) * pow(visibility[i][j], ACO_BETA) / sum;
+				break;
+			}
 		}
 	}
-
 	return p;
 }
 
