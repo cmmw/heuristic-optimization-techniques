@@ -13,6 +13,9 @@
 #include <climits>
 #include <cassert>
 
+
+extern bool quit;
+
 namespace tcbvrp
 {
 
@@ -70,7 +73,7 @@ void ACO::solve()
 	std::vector<std::vector<Node*> > bestTours;
 
 	int bestCost = INT_MAX;
-	for (int t = 0; t < TIMESTEPS; t++)		//time steps
+	for (int t = 0; t < TIMESTEPS && !quit; t++)		//time steps
 	{
 
 		// stores the generated solution for each ant
