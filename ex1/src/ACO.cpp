@@ -13,6 +13,9 @@
 #include <climits>
 #include <cassert>
 
+
+extern bool quit;
+
 namespace tcbvrp
 {
 
@@ -25,7 +28,6 @@ const double EVAP_RATE = 0.2;
 
 const double ACO_ALPHA = 1;
 const double ACO_BETA = 1;
-
 
 // This flag control the use of special pheromone treatment
 // if set to true, multiple matrices will be set up, that
@@ -71,7 +73,7 @@ void ACO::solve()
 	std::vector<std::vector<Node*> > bestTours;
 
 	int bestCost = INT_MAX;
-	for (int t = 0; t < TIMESTEPS; t++)		//time steps
+	for (int t = 0; t < TIMESTEPS && !quit; t++)		//time steps
 	{
 
 		// stores the generated solution for each ant
