@@ -199,7 +199,7 @@ int main(int argc, char* argv[])
 
 	clock_t end = clock();
 
-	//checkSolution(graph, sol);
+//	checkSolution(graph, sol);
 
 	/*Print results*/
 	sol.printSolution();
@@ -268,6 +268,11 @@ void checkSolution(const Graph& graph, Solution& sol)
 	const std::vector<std::vector<int> >& m = graph.getAdjacencyMatrix();
 	for (std::vector<std::vector<Node*> >::iterator tour = sol.getTours().begin(); tour != sol.getTours().end(); tour++)
 	{
+		if (Algorithm::calcTourCosts(*tour, m) > graph.getGlobalTimeLimit())
+		{
+			std::cerr << "Solution infeasible: global time limit per tour violated!" << std::endl;
+			exit(1);
+		}
 		for (std::vector<Node*>::const_iterator it = tour->begin(); it != tour->end(); it++)
 		{
 			for (std::vector<Node*>::const_iterator nodeIt = graph.getNodes().begin(); nodeIt != graph.getNodes().end(); nodeIt++)
