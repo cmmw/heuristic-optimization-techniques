@@ -7,11 +7,14 @@
 
 #include <iostream>
 #include <cmath>
-#include "ACO.h"
 #include <cstdlib>
 #include <numeric>
 #include <climits>
 #include <cassert>
+
+#include "ACO.h"
+#include "Solution.h"
+#include "LNS.h"
 
 extern bool quit;
 
@@ -21,19 +24,19 @@ namespace tcbvrp
 // Initial value for all pheromones
 const double INIT_PHERO = 1;
 
-const int ANTS = 100;
-const int TIMESTEPS = 50;
-const double EVAP_RATE = 0.2;
+const int ANTS = 500;
+const int TIMESTEPS = 100;
+const double EVAP_RATE = 0.3;
 
 const double ACO_ALPHA = 1;
-const double ACO_BETA = 1;
+const double ACO_BETA = 5;
 
 // This flag control the use of special pheromone treatment
 // if set to true, multiple matrices will be set up, that
 // store pheromone values for each subtour. If set to false
 // every subtour uses the same values and only one matrix
 // is used for the storing of pheromone values
-char phFlag = 'a';
+char phFlag = 'c';
 
 ACO::ACO(Solution* solution, const Graph& graph) :
 		Algorithm(solution, graph)
@@ -69,7 +72,9 @@ ACO::~ACO()
 void ACO::solve()
 {
 	// stores the overall best solution (includes multiple tours)
-	std::vector<std::vector<Node*> > bestTours;
+	std::vector<std::vector<Node*> > bestAntSolution;
+	std::vector<std::vector<Node*> > bestSolution;
+	int bestSolCosts = INT_MAX;
 
 	int bestCost = INT_MAX;
 	for (int t = 0; t < TIMESTEPS && !quit; t++)		//time steps
@@ -195,6 +200,7 @@ void ACO::solve()
 				switch (phFlag)
 				{
 				case 'a':
+					case 'c':
 					pheromones[i][j] = (1 - EVAP_RATE) * pheromones[i][j];
 					break;
 				case 'b':
@@ -215,12 +221,13 @@ void ACO::solve()
 
 			for (std::vector<std::vector<Node*> >::iterator tour = tours->begin(); tour != tours->end(); tour++)
 			{
-				int length = Algorithm::calcTourCosts(*tour, graph.getAdjacencyMatrix());
-				totalCosts += length;
+				int cost = Algorithm::calcTourCosts(*tour, graph.getAdjacencyMatrix());
+				totalCosts += cost;
 			}
 
 			for (std::vector<std::vector<Node*> >::iterator tour = tours->begin(); tour != tours->end(); tour++)
 			{
+				int tourCost = Algorithm::calcTourCosts(*tour, graph.getAdjacencyMatrix());
 				switch (phFlag)
 				{
 				case 'a':
@@ -228,6 +235,9 @@ void ACO::solve()
 					break;
 				case 'b':
 					ph2[tourNr][0][(*tour->begin())->getId()] += 1 / (double) totalCosts;
+					break;
+				case 'c':
+					pheromones[0][(*tour->begin())->getId()] += (1 / (tours->size() * totalCosts)) * ((tourCost - graph.getAdjacencyMatrix()[0][(*tour->begin())->getId()]) / (tour->size() * tourCost));
 					break;
 				}
 
@@ -241,6 +251,9 @@ void ACO::solve()
 					case 'b':
 						ph2[tourNr][(*it1)->getId()][(*it2)->getId()] += 1 / (double) totalCosts;
 						break;
+					case 'c':
+						pheromones[(*it1)->getId()][(*it2)->getId()] += (1 / (tours->size() * totalCosts)) * ((tourCost - graph.getAdjacencyMatrix()[(*it1)->getId()][(*it2)->getId()]) / (tour->size() * tourCost));
+						break;
 					}
 
 					if (it2 + 1 == tour->end())
@@ -253,6 +266,9 @@ void ACO::solve()
 						case 'b':
 							ph2[tourNr][(*it2)->getId()][0] += 1 / (double) totalCosts;
 							break;
+						case 'c':
+							pheromones[(*it2)->getId()][0] += (1 / (tours->size() * totalCosts)) * ((tourCost - graph.getAdjacencyMatrix()[(*it2)->getId()][0]) / (tour->size() * tourCost));
+							break;
 						}
 					}
 				}
@@ -262,12 +278,25 @@ void ACO::solve()
 			if (bestCost > totalCosts)
 			{
 				bestCost = totalCosts;
-				bestTours = *tours;
+				bestAntSolution = *tours;
 			}
+		}
+
+		//Daeomon actions (lns)
+		Solution sol(graph.getAdjacencyMatrix());
+		sol.addTours(bestAntSolution);
+		LNS lns(&sol, graph);
+		lns.solve();
+
+		if (bestSolCosts == 0 || bestSolCosts > sol.getTotalCosts())
+		{
+			bestSolCosts = sol.getTotalCosts();
+			bestSolution = sol.getTours();
 		}
 	}
 
-	this->solution->addTours(bestTours);
+//	this->solution->addTours(bestTours);
+	this->solution->addTours(bestSolution);
 }
 
 int ACO::getBestNodeIdx(std::vector<double> probabilities)
@@ -303,6 +332,7 @@ std::vector<double> ACO::calcProbabilites(Node* node1, const std::vector<Node*>&
 		switch (phFlag)
 		{
 		case 'a':
+			case 'c':
 			sum += (pow(pheromones[node1->getId()][neighbors[n]->getId()], ACO_ALPHA) * pow(visibility[node1->getId()][neighbors[n]->getId()], ACO_BETA));
 			break;
 		case 'b':
@@ -322,6 +352,7 @@ std::vector<double> ACO::calcProbabilites(Node* node1, const std::vector<Node*>&
 			switch (phFlag)
 			{
 			case 'a':
+				case 'c':
 				p[n] = pow(pheromones[i][j], ACO_ALPHA) * pow(visibility[i][j], ACO_BETA) / sum;
 				break;
 			case 'b':
