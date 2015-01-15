@@ -13,7 +13,6 @@
 #include <climits>
 #include <cassert>
 
-
 extern bool quit;
 
 namespace tcbvrp
@@ -213,18 +212,22 @@ void ACO::solve()
 		{
 			int totalCosts = 0;
 			int tourNr = 0;
+
 			for (std::vector<std::vector<Node*> >::iterator tour = tours->begin(); tour != tours->end(); tour++)
 			{
 				int length = Algorithm::calcTourCosts(*tour, graph.getAdjacencyMatrix());
 				totalCosts += length;
+			}
 
+			for (std::vector<std::vector<Node*> >::iterator tour = tours->begin(); tour != tours->end(); tour++)
+			{
 				switch (phFlag)
 				{
 				case 'a':
-					pheromones[0][(*tour->begin())->getId()] += 1 / (double) length;
+					pheromones[0][(*tour->begin())->getId()] += 1 / (double) totalCosts;
 					break;
 				case 'b':
-					ph2[tourNr][0][(*tour->begin())->getId()] += 1 / (double) length;
+					ph2[tourNr][0][(*tour->begin())->getId()] += 1 / (double) totalCosts;
 					break;
 				}
 
@@ -233,10 +236,10 @@ void ACO::solve()
 					switch (phFlag)
 					{
 					case 'a':
-						pheromones[(*it1)->getId()][(*it2)->getId()] += 1 / (double) length;
+						pheromones[(*it1)->getId()][(*it2)->getId()] += 1 / (double) totalCosts;
 						break;
 					case 'b':
-						ph2[tourNr][(*it1)->getId()][(*it2)->getId()] += 1 / (double) length;
+						ph2[tourNr][(*it1)->getId()][(*it2)->getId()] += 1 / (double) totalCosts;
 						break;
 					}
 
@@ -245,13 +248,12 @@ void ACO::solve()
 						switch (phFlag)
 						{
 						case 'a':
-							pheromones[(*it2)->getId()][0] += 1 / (double) length;
+							pheromones[(*it2)->getId()][0] += 1 / (double) totalCosts;
 							break;
 						case 'b':
-							ph2[tourNr][(*it2)->getId()][0] += 1 / (double) length;
+							ph2[tourNr][(*it2)->getId()][0] += 1 / (double) totalCosts;
 							break;
 						}
-
 					}
 				}
 				tourNr++;
