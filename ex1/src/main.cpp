@@ -19,8 +19,8 @@ using namespace tcbvrp;
 
 //Default values for parameters:
 int START_REMOVES = 2;
-int TRIALS_PER_COUNT = 15;
-int REMOVE_LIMIT = 5;
+int TRIALS_PER_COUNT = 3;
+int REMOVE_LIMIT = 2;
 double D = 3.0;
 double ALPHA = 0.43;
 int GRASP_TRIALS = 5;
@@ -184,9 +184,9 @@ int main(int argc, char* argv[])
 		case 'd':
 			arg.str(optarg);
 			arg >> ACO_EVAP_RATE;
-			if (ACO_EVAP_RATE <= 0)
+			if (ACO_EVAP_RATE < 0 || ACO_EVAP_RATE > 1)
 			{
-				std::cerr << "aco_evaprate must be > 0" << std::endl;
+				std::cerr << "aco_evaprate must be >= 0 and <= 1" << std::endl;
 				return 1;
 			}
 			break;
@@ -316,7 +316,7 @@ int main(int argc, char* argv[])
 //	checkSolution(graph, sol);
 
 	/*Print results*/
-	sol.printSolution();
+//	sol.printSolution();
 
 	double ms = double(end - begin) / CLOCKS_PER_SEC;
 	LOG << "Took " << ms << " seconds";
@@ -325,7 +325,7 @@ int main(int argc, char* argv[])
 	sol.printOfficialSolution();
 
 	// only print total costs for irace
-//	std::cout << sol.getTotalCosts() << std::endl;
+	std::cout << sol.getTotalCosts() << std::endl;
 
 	return 0;
 }

@@ -26,11 +26,14 @@
 ##    condition is satisfied, FALSE otherwise.
 
 # 1:            2:                   3: 4:      5:
-startRemoves    "--startRemoves "    i  (1, 3) 
-trials          "--trials "          i  (1, 10)
-removeLimit     "--removeLimit "     i  (4, 6) 
-relatedness     "--relatedness "     r  (5.0, 25.0)
-greediness      "--greediness "      r  (0.0, 1.0)
-graspTrials     "--graspTrials "     i  (1, 10)
+#startRemoves    "--startRemoves "    i  (1, 3) 
+#trials          "--trials "          i  (1, 10)
+#removeLimit     "--removeLimit "     i  (4, 6) 
+#relatedness     "--relatedness "     r  (5.0, 25.0)
+#greediness      "--greediness "      r  (0.0, 1.0)
+#graspTrials     "--graspTrials "     i  (1, 10)
 
+aco_beta		"--aco_beta "		r	(0,10)
+aco_evaprate	"--aco_evaprate " 	r	(0,1)
+aco_q			"--aco_q "			i	(1,10)
 
