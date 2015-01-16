@@ -26,6 +26,23 @@ double ALPHA = 0.43;
 int GRASP_TRIALS = 5;
 bool quit = false;
 
+/*ACO PARAMS*/
+// Initial value for all pheromones
+double ACO_INIT_PHERO = 1;
+int ACO_ANTS = 500;
+int ACO_TIMESTEPS = 100;
+double ACO_EVAP_RATE = 0.3;
+double ACO_ALPHA = 1;
+double ACO_BETA = 5;
+double ACO_Q = 5;
+
+// This flag control the use of special pheromone treatment
+// if set to true, multiple matrices will be set up, that
+// store pheromone values for each subtour. If set to false
+// every subtour uses the same values and only one matrix
+// is used for the storing of pheromone values
+char ACO_phFlag = 'c';
+
 void runConstHeu(Solution* sol, const Graph& graph);
 void runRandConstHeu(Solution* sol, const Graph& graph);
 void runLNS(Solution* sol, const Graph& graph);
@@ -64,6 +81,15 @@ int main(int argc, char* argv[])
 						{ "greediness", required_argument, 0, 'g' },
 						{ "algo", required_argument, 0, 'a' },					//0 greedy const. heu., 1 vlns, 2 grasp
 						{ "graspTrials", required_argument, 0, 'z' },
+
+						{ "aco_ants", required_argument, 0, 'b' },
+						{ "aco_timesteps", required_argument, 0, 'c' },
+						{ "aco_evaprate", required_argument, 0, 'd' },
+						{ "aco_alpha", required_argument, 0, 'e' },
+						{ "aco_beta", required_argument, 0, 'f' },
+						{ "aco_q", required_argument, 0, 'h' },
+						{ "aco_phflag", required_argument, 0, 'p' },
+						{ "aco_init_ph", required_argument, 0, 'q' },
 						{ 0, 0, 0, 0 }
 				};
 
@@ -135,6 +161,86 @@ int main(int argc, char* argv[])
 				return 1;
 			}
 			break;
+		case 'b':
+			arg.str(optarg);
+			arg >> ACO_ANTS;
+			if (ACO_ANTS <= 0)
+			{
+				std::cerr << "aco_ants must be > 0" << std::endl;
+				return 1;
+			}
+			break;
+
+		case 'c':
+			arg.str(optarg);
+			arg >> ACO_TIMESTEPS;
+			if (ACO_TIMESTEPS <= 0)
+			{
+				std::cerr << "aco_timesteps must be > 0" << std::endl;
+				return 1;
+			}
+			break;
+
+		case 'd':
+			arg.str(optarg);
+			arg >> ACO_EVAP_RATE;
+			if (ACO_EVAP_RATE <= 0)
+			{
+				std::cerr << "aco_evaprate must be > 0" << std::endl;
+				return 1;
+			}
+			break;
+
+		case 'e':
+			arg.str(optarg);
+			arg >> ACO_ALPHA;
+			if (ACO_ALPHA <= 0)
+			{
+				std::cerr << "aco_alpha must be > 0" << std::endl;
+				return 1;
+			}
+			break;
+
+		case 'f':
+			arg.str(optarg);
+			arg >> ACO_BETA;
+			if (ACO_BETA <= 0)
+			{
+				std::cerr << "aco_beta must be > 0" << std::endl;
+				return 1;
+			}
+			break;
+
+		case 'h':
+			arg.str(optarg);
+			arg >> ACO_Q;
+			if (ACO_Q <= 0)
+			{
+				std::cerr << "aco_q must be >= 0" << std::endl;
+				return 1;
+			}
+			break;
+
+		case 'p':
+			arg.str(optarg);
+			arg >> ACO_phFlag;
+			if (ACO_phFlag != 'a' && ACO_phFlag != 'b' && ACO_phFlag != 'c')
+			{
+				std::cerr << "aco_phflag must be element of {'a', 'b', 'c'}" << std::endl;
+				return 1;
+			}
+			break;
+
+		case 'q':
+			arg.str(optarg);
+			arg >> ACO_INIT_PHERO;
+			if (ACO_INIT_PHERO < 0)
+			{
+				std::cerr << "aco_init_ph must be >= 0" << std::endl;
+				return 1;
+			}
+			break;
+
 		default:
 			std::cerr << "?? getopt returned character code " << std::oct << std::showbase << c << " ??" << std::endl;
 			return 1;
@@ -168,6 +274,14 @@ int main(int argc, char* argv[])
 	LOG << "Set D to " << D;
 	LOG << "Set ALPHA to " << ALPHA;
 	LOG << "Set GRASP_TRIALS to " << GRASP_TRIALS;
+	LOG << "Set ACO_ANTS to " << ACO_ANTS;
+	LOG << "Set ACO_TIMESTEPS to " << ACO_TIMESTEPS;
+	LOG << "Set ACO_EVAP_RATE to " << ACO_EVAP_RATE;
+	LOG << "Set ACO_ALPHA to " << ACO_ALPHA;
+	LOG << "Set ACO_BETA to " << ACO_BETA;
+	LOG << "Set ACO_Q to " << ACO_Q;
+	LOG << "Set ACO_phFlag to " << ACO_phFlag;
+	LOG << "Set ACO_INIT_PHERO to " << ACO_INIT_PHERO;
 
 	signal(SIGINT, signalHandler);
 
