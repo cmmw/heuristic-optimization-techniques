@@ -31,10 +31,10 @@ bool quit = false;
 double ACO_INIT_PHERO = 1;
 int ACO_ANTS = 500;
 int ACO_TIMESTEPS = 100;
-double ACO_EVAP_RATE = 0.3;
-double ACO_ALPHA = 1;
-double ACO_BETA = 5;
-double ACO_Q = 5;
+double ACO_EVAP_RATE = 0.5;
+double ACO_ALPHA = 50;
+double ACO_BETA = 1;
+double ACO_Q = 3;
 
 // This flag control the use of special pheromone treatment
 // if set to true, multiple matrices will be set up, that

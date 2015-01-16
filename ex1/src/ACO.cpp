@@ -17,7 +17,6 @@
 #include "Solution.h"
 #include "LNS.h"
 
-
 extern bool quit;
 
 namespace tcbvrp
@@ -60,11 +59,9 @@ void ACO::solve()
 	std::vector<std::vector<Node*> > bestAntSolution;
 	std::vector<std::vector<Node*> > bestSolution;
 	int bestSolCosts = INT_MAX;
-
 	int bestCost = INT_MAX;
 	for (int t = 0; t < ACO_TIMESTEPS && !quit; t++)		//time steps
 	{
-
 		// stores the generated solution for each ant
 		std::vector<std::vector<std::vector<Node*> > > solutions;
 		for (int k = 0; k < ACO_ANTS; k++)		//ants
@@ -105,8 +102,8 @@ void ACO::solve()
 							validNeighbors.push_back(*it);
 						}
 					}
-					p = calcProbabilites(n0, validNeighbors, tourNr);
 
+					p = calcProbabilites(n0, validNeighbors, tourNr);
 					idx = getBestNodeIdx(p);
 
 					// If idx is -1 it means that probability of all the validNeighbours is zero
@@ -114,7 +111,6 @@ void ACO::solve()
 					// to go on with this tour
 					if (idx != -1)
 					{
-
 						// this assertion makes sure that none of the valid neighbours is visited,
 						// some bugs could violate this assertion
 						assert((unsigned int ) idx < validNeighbors.size());
@@ -172,7 +168,6 @@ void ACO::solve()
 			{
 				solutions.push_back(tours);
 			}
-
 		}
 
 		//Update pheromones
@@ -277,6 +272,65 @@ void ACO::solve()
 		{
 			bestSolCosts = sol.getTotalCosts();
 			bestSolution = sol.getTours();
+		}
+
+		int totalCosts = 0;
+		int tourNr = 0;
+
+		for (std::vector<std::vector<Node*> >::iterator tour = bestSolution.begin(); tour != bestSolution.end(); tour++)
+		{
+			int cost = Algorithm::calcTourCosts(*tour, graph.getAdjacencyMatrix());
+			totalCosts += cost;
+		}
+
+		for (std::vector<std::vector<Node*> >::iterator tour = bestSolution.begin(); tour != bestSolution.end(); tour++)
+		{
+			int tourCost = Algorithm::calcTourCosts(*tour, graph.getAdjacencyMatrix());
+			switch (ACO_phFlag)
+			{
+			case 'a':
+				pheromones[0][(*tour->begin())->getId()] += ACO_Q / (double) totalCosts;
+				break;
+			case 'b':
+				ph2[tourNr][0][(*tour->begin())->getId()] += ACO_Q / (double) totalCosts;
+				break;
+			case 'c':
+				pheromones[0][(*tour->begin())->getId()] += (ACO_Q / (bestSolution.size() * totalCosts)) * ((tourCost - graph.getAdjacencyMatrix()[0][(*tour->begin())->getId()]) / (tour->size() * tourCost));
+				break;
+			}
+
+			for (std::vector<Node*>::const_iterator it1 = tour->begin(), it2 = it1 + 1; it2 != tour->end(); it1++, it2++)
+			{
+				switch (ACO_phFlag)
+				{
+				case 'a':
+					pheromones[(*it1)->getId()][(*it2)->getId()] += ACO_Q / (double) totalCosts;
+					break;
+				case 'b':
+					ph2[tourNr][(*it1)->getId()][(*it2)->getId()] += ACO_Q / (double) totalCosts;
+					break;
+				case 'c':
+					pheromones[(*it1)->getId()][(*it2)->getId()] += (ACO_Q / (bestSolution.size() * totalCosts)) * ((tourCost - graph.getAdjacencyMatrix()[(*it1)->getId()][(*it2)->getId()]) / (tour->size() * tourCost));
+					break;
+				}
+
+				if (it2 + 1 == tour->end())
+				{
+					switch (ACO_phFlag)
+					{
+					case 'a':
+						pheromones[(*it2)->getId()][0] += ACO_Q / (double) totalCosts;
+						break;
+					case 'b':
+						ph2[tourNr][(*it2)->getId()][0] += ACO_Q / (double) totalCosts;
+						break;
+					case 'c':
+						pheromones[(*it2)->getId()][0] += (ACO_Q / (bestSolution.size() * totalCosts)) * ((tourCost - graph.getAdjacencyMatrix()[(*it2)->getId()][0]) / (tour->size() * tourCost));
+						break;
+					}
+				}
+			}
+			tourNr++;
 		}
 	}
 
