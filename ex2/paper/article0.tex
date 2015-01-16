@@ -39,17 +39,86 @@
 
 \section{Description of the algorithms}
 
+For this exercise we decided to go for the second option and implemented an Ant Colony Optimization (ACO) based algorithm to solve the \emph{Time-Constrained Bipartite Vehicle Routing Problem (TCBVRP)}.
+
+We followed the guidelines from the lecture slides to create the basic algorithm presented in the lecture. Afterwards we implemented three pheromone model variants and included our Very Large Neighbourhood Search (VLNS) heuristic from exercise one into the daemon actions of our ACO.
+
+Since our problem can apply multiple subtours each ant will generate one or more tours on its path. We tried different approaches with and without the inclusion of paths from the demand node to the zero node (the ending of a subtour). In experiments it turned out that with the inclusion of paths to the zero node, shorter subtours ere preferred in the majority of cases, leading to lots of infeasible solutions.
+Since it is not possible to predict at certain times if an ant will produce a feasible solution we drop all infeasible solutions at the end of each timestep and only use feasible solutions for the pheromone update. We therefore decided not to include paths to the zero nodes in the pheromone model because it caused the generation of too many infeasible solutions.
+
+\subsection{Ants and Local information}
+Each ant tries to create a solution in every timestep by walking through the graph.
+We use the decision function for the next node as it is presented in the lecture. Therefore the ants choose their next nodes out of local information, pheromone information and a random factor. The matrix for local information uses static values for each link in the graph that are calculated at the start of the algorithm ($\eta_{ij} = 1 / d_{ij}$). 
+
+
+\subsection{Pheromone model 1}
+At first we simply applied the pheromone update from the lecture onto the TCBVRP, which is:
+
+\begin{equation}
+  \Delta \tau_{ij}^k(t) = \begin{cases}
+    Q / \text{length}(T^k(t)) & if(i,j) \in T^k(t) \\
+    0 & \text{otherwise}
+  \end{cases} 
+\end{equation}
+
+In our case $length(T^k)$ is the total length of all tours from a single solution. Because a single ant can go through multiple tours (which is the case if multiple vehicles are use) $length(T^k)$ sums up the costs of all these tours.
+The value $Q$ is a constant that is set by the program parameters.
+
+\subsection{Pheromone model 2}
+
+In our second pheromone model variant we decided to store different pheromone values for each vehicle. We achieved this by creating a matrix for each vehicle which stores the values. Everything else stays the same as in the Pheromone model 2.
+The update therefore becomes:
+\begin{equation}
+  \Delta \tau_{ij}^kl(t) = \begin{cases}
+    Q / \text{length}(T^{kl}(t)) & \text{if}(i,j) \in T^{kl}(t) \\
+    0 & \text{otherwise}
+  \end{cases} 
+\end{equation}
+Here $l$ means the vehicle number. Therefore all $\tau$ values are calculated for all of the subtours in order ($l=1$ means the first subtour, $l=2$ means the second subtour and so on).
+
+
+\subsection{Pheromone model 3}
+
+Our third pheromone implementation uses a similar pheromone update function as described in \cite{Yu2009171}.
+The update for this variant is:
+\begin{equation}
+  \Delta \tau_{ij}^k(t) = \begin{cases}
+    {Q \over {K \times L}} \times {{D^k - d_{ij}} \over {m^k \times D^k}} & \text{if link} (i,j)  \in T^{kl}(t) \\
+    0 & \text{otherwise}
+  \end{cases} 
+\end{equation}
+
+This function makes the update a bit more sophisticated since the contribution of each single link to the solution is considered. The first part of the formula ${Q \over {K \times L}}$ is similar to Pheromone Model 1 and 2. $K$ denotes the number of tours in the solution and $L$ is the total costs. Therefore the first part considers the overall quality of the solution. The second part ${{D^k - d_{ij}} \over {m^k \times D^k}}$ on the other hand considers the contribution of the single link to the solution. $D^k$ means the length of the k-th tour, $d_{ij}$ means the cost of the link $ij$ and $m^k$ means the number of nodes visited in the k-th tour.
+
+
+\subsection{Inclusion of the VLNS metaheuristic}
+
+After the ant solutions are generated we try to improve a number of the better solutions with our VLNS. We do this in every time step before the pheromone update.
+
 
 \subsection{Description of the parameters}
 Our algorithm is configured by a number of parameters that affect the search:
 
 \begin{itemize}
-  \item parameter1
+  \item \textbf{Initial Pheromone value} \\
+    This value sets the pheromone values for each edge at the start of the algorithm
+  \item \textbf{Number of ants} \\
+    This parameter sets the number of ants used.
+  \item \textbf{Timesteps} \\
+    This parameter sets the number of timesteps that are performed.
+  \item \textbf{Evaporation rate} \\
+    Determines how fast pheromone values are evaporated.
+  \item \textbf{Alpha} \\
+    Determines the influence of the pheromone values in the decision function.
+  \item \textbf{Beta} \\
+    Determines the influence of the local information in the decision function.
+  \item \textbf{Q} \\
+    Determines the increase of the pheromone values in the update function.
 \end{itemize}
 
 \section{Parameter Tuning}
-
-irace \cite{lopez2011irace}
+We tried to find out good values for the parameters by running experiments with settings of different values. We did not touch the initial pheromone values as they do not seem to make that much of a difference. Higher values for the number of timesteps and ants lead generally yield better results at the cost of a higher running time.
+We tuned the evaporation rate, alpha, beta and Q with the use of irace \cite{lopez2011irace} (We used the default parameters of irace but only included the instances with 120 and 180 nodes because of the restricted time).
 
 
 \section{Results and Discussion}
