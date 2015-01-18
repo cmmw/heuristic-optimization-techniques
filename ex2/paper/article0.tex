@@ -117,8 +117,8 @@ Our algorithm is configured by a number of parameters that affect the search:
 \end{itemize}
 
 \section{Parameter Tuning}
-We tried to find out good values for the parameters by running experiments with settings of different values. We did not touch the initial pheromone values as they do not seem to make that much of a difference. Higher values for the number of timesteps and ants lead generally yield better results at the cost of a higher running time.
-We tuned the evaporation rate, alpha, beta and Q with the use of irace \cite{lopez2011irace} (We used the default parameters of irace but only included the instances with 120 and 180 nodes because of the restricted time).
+We tried to find out good values for the parameters by running experiments with settings of different values. We did not touch the initial pheromone values as they do not seem to make that much of a difference. Higher values for the number of timesteps and ants generally yield better results at the cost of a higher running time.
+We tuned the evaporation rate, beta and Q with the use of irace \cite{lopez2011irace} (We used the default parameters of irace but only included the instances with 120 and 180 nodes because of the restricted time).
 
 
 \section{Results and Discussion}
@@ -131,25 +131,25 @@ We tuned the evaporation rate, alpha, beta and Q with the use of irace \cite{lop
 \hline
 Nodes & ACO 1 & Time & Total & ACO 2 & Time & Total & ACO 3 & Time & Total \\
 \hline \hline 
-10 &  &  &  &  &  &  &  &  &  \\
+10 & 347 & 1.45 & 43.63 & 347 & 1.46 & 44.68 & 347 & 1.52 & 45.76 \\
 \hline
-30 &  &  &  &  &  &  &  &  &  \\
+30 & 766 & 8.45 & 252.48 & 768 & 8.46 & 254.12 & 771 & 8.62 & 251.61 \\
 \hline
-60 &  &  &  &  &  &  &  &  &  \\
+60 & 1736 & 26.82 & 809.02 & 1739 & 27.77 & 825.52 & 1730 & 27.03 & 810.02 \\
 \hline
-90 &  &  &  &  &  &  &  &  &  \\
+90 & 2071 & 52.14 & 1574.69 & 2099 & 53.97 & 1608.95 & 2120 & 51.70 & 1572.03 \\
 \hline
-120 &  &  &  &  &  &  &  &  &  \\
+120 & 2737 & 88.31 & 2652.42 & 2770 & 91.27 & 2717.13 & 2805 & 89.10 & 2660.74 \\
 \hline
-180 &  &  &  &  &  &  &  &  &  \\
+180 & 4691 & 189.04 & 5704.93 & 4772 & 193.68 & 5813.06 & 4902 & 193.49 & 5751.64  \\
 \hline
-300 &  &  &  &  &  &  &  &  &  \\
+300 & 9049 & 111.66 & 3338.50 & 9283 & 119.95 & 3566.57 & 9367 & 117.03 & 3535.26 \\
 \hline
-400 &  &  &  &  &  &  &  &  &  \\
+400 & 11123 & 184.84 & 5549.88 & 11591 & 197.46 & 5910.42 & 12037 & 199.51 & 5981.04 \\
 \hline
-500 &  &  &  &  &  &  &  &  &  \\
+500 & 13601 & 277.40 & 8312.43 & 14160 & 292.77 & 8842.35 & 14785 & 309.57 & 9227.34 \\
 \hline
-700 &  &  &  &  &  &  &  &  &  \\
+700 & 18528 & 520.58 & 15847.38 & 19348 & 576.85 & 16831.65 & 20444 & 604.16 & 18370.32 \\
 \hline
 \end{tabular}
 
