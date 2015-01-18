@@ -51,7 +51,7 @@ Each ant tries to create a solution in every timestep by walking through the gra
 We use the decision function for the next node as it is presented in the lecture. Therefore the ants choose their next nodes out of local information, pheromone information and a random factor. The matrix for local information uses static values for each link in the graph that are calculated at the start of the algorithm ($\eta_{ij} = 1 / d_{ij}$). 
 
 
-\subsection{Pheromone model 1}
+\subsection{Pheromone model 1 (ACO 1)}
 At first we simply applied the pheromone update from the lecture onto the TCBVRP, which is:
 
 \begin{equation}
@@ -64,12 +64,12 @@ At first we simply applied the pheromone update from the lecture onto the TCBVRP
 In our case $length(T^k)$ is the total length of all tours from a single solution. Because a single ant can go through multiple tours (which is the case if multiple vehicles are use) $length(T^k)$ sums up the costs of all these tours.
 The value $Q$ is a constant that is set by the program parameters.
 
-\subsection{Pheromone model 2}
+\subsection{Pheromone model 2 (ACO 2)}
 
 In our second pheromone model variant we decided to store different pheromone values for each vehicle. We achieved this by creating a matrix for each vehicle which stores the values. Everything else stays the same as in the Pheromone model 2.
 The update therefore becomes:
 \begin{equation}
-  \Delta \tau_{ij}^kl(t) = \begin{cases}
+  \Delta \tau_{ij}^{kl}(t) = \begin{cases}
     Q / \text{length}(T^{kl}(t)) & \text{if}(i,j) \in T^{kl}(t) \\
     0 & \text{otherwise}
   \end{cases} 
@@ -77,7 +77,7 @@ The update therefore becomes:
 Here $l$ means the vehicle number. Therefore all $\tau$ values are calculated for all of the subtours in order ($l=1$ means the first subtour, $l=2$ means the second subtour and so on).
 
 
-\subsection{Pheromone model 3}
+\subsection{Pheromone model 3 (ACO 3)}
 
 Our third pheromone implementation uses a similar pheromone update function as described in \cite{Yu2009171}.
 The update for this variant is:
@@ -93,8 +93,8 @@ This function makes the update a bit more sophisticated since the contribution o
 
 \subsection{Inclusion of the VLNS metaheuristic}
 
-After the ant solutions are generated we try to improve a number of the better solutions with our VLNS. We do this in every time step before the pheromone update.
-
+After the ant solutions are generated we try to improve the best solution with our VLNS. We do this in every time step before the pheromone update.
+Because our VLNS might produce a great amount of runtime we used the cheapest parameter settings (removeLimit=2, ... see abstract of exercise 1 for more details).
 
 \subsection{Description of the parameters}
 Our algorithm is configured by a number of parameters that affect the search:
@@ -120,14 +120,63 @@ Our algorithm is configured by a number of parameters that affect the search:
 We tried to find out good values for the parameters by running experiments with settings of different values. We did not touch the initial pheromone values as they do not seem to make that much of a difference. Higher values for the number of timesteps and ants generally yield better results at the cost of a higher running time.
 We tuned the evaporation rate, beta and Q with the use of irace \cite{lopez2011irace} (We used the default parameters of irace but only included the instances with 120 and 180 nodes because of the restricted time).
 
+Best parameter configurations determined by irace:
+
+\begin{verbatim}
+1  --aco_beta 7.1565 --aco_evaprate 0.7706 --aco_q 8
+2  --aco_beta 9.0472 --aco_evaprate 0.6608 --aco_q 5
+3  --aco_beta 7.7961 --aco_evaprate 0.7481 --aco_q 9
+\end{verbatim}
 
 \section{Results and Discussion}
 
+We performed 30 runs on each instance and then recorded the best results for each pheromone model in Table \ref{myTable2}. Note that because of the limited time we had to remove the inclusion of our VLNS algorithm for the instances with 400, 500 and 700 nodes as the runtime would have become too long in these cases.
+Pheromone model 1 seems to lead to the best performances. While the other 2 models yield results that are slightly worse when compared with model 1. We assume this has to do with the fact that models 2 and 3 are a bit too complex for this problem and can irritate good solution paths during the search. These effect can also be seen in the increased running time of model 2 and 3.
+When compared to the results of the first exercise in Table \ref{myTable1} the ACO algorithms clearly outperform the Greedy Heuristic. Although the performance of VLNS is a bit better the ACO 1 algorithm can also compete with its results.
+
 
 \begin{table}
+  \small
     \begin{adjustwidth}{-.5in}{-.5in}  
         \begin{center}
-\begin{tabular}{r | r | r | r | r | r | r | r | r | r}
+\begin{tabular}{r | r | r | r | r | r | r | r | r}
+\hline
+Nodes & Gr.Heu. & Time &  VLNS & Time & Total & GRASP & Time & Total \\
+\hline \hline 
+10 & 356 & 0 & 347 & 0.0037 & 0.1663 & 347 & 0.0335 & 0.8766 \\
+\hline
+30 & 798 & 0.0001 & 767 & 0.1394 & 3.0000 & 764 & 1.4821 & 26.4703 \\
+\hline
+60 & 1841 & 0.0007 & 1712 & 2.8097 & 16.3781 & 1711 & 9.4027 & 315.7900 \\
+\hline
+90 & 2171 & 0.0017 & 2055 & 13.6852 & 222.8823 & 2055 & 67.0838 & 1709.3321\\
+\hline
+120 & 2844 & 0.0050 & 2745 & 17.5720 & 194.1892 & 2712 & 6.6881 & 200.7002 \\
+\hline
+180 & 4874 & 0.0071 & 4651 & 7.8030 & 106.1305 & 4623 & 36.1978 & 1216.7366 \\
+\hline
+300 & 9390 & 0.0210 & 8833 & 7.9615 & 138.3080 & 8782 & 48.0761 & 1457.6698 \\
+\hline
+400 & 11374 & 0.0387 & 10929 & 32.6781 & 482.6105 & 11073 & 21.5001 & 1061.1469 \\
+\hline
+500 & 13922 & 0.0627 & 13514 & 7.5111 & 97.4571 & 13463 & 71.5584 & 2753.0495 \\
+\hline
+700 & 19007 & 0.1300 & 18354 & 21.4090 & 396.1424 & 18311 & 447.6060 & 9254.5938 \\
+\hline
+\end{tabular}
+
+        \caption{Table with best results from the old VLNS algorithms. }
+        \label{myTable1}
+        \end{center}
+    \end{adjustwidth}
+\end{table}
+
+\begin{table}
+              \small
+    \begin{adjustwidth}{-.5in}{-.5in}  
+        \begin{center}
+          \begin{tabular}{r | r | r | r | r | r | r | r | r | r}
+
 \hline
 Nodes & ACO 1 & Time & Total & ACO 2 & Time & Total & ACO 3 & Time & Total \\
 \hline \hline 
@@ -153,8 +202,8 @@ Nodes & ACO 1 & Time & Total & ACO 2 & Time & Total & ACO 3 & Time & Total \\
 \hline
 \end{tabular}
 
-        \caption{Table with best results from the runs. }
-        \label{myTable}
+        \caption{Table with best results from the ACO algortihm runs. }
+        \label{myTable2}
         \end{center}
     \end{adjustwidth}
 \end{table}
