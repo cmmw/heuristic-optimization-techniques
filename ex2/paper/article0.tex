@@ -130,8 +130,7 @@ Best parameter configurations determined by irace:
 
 \section{Results and Discussion}
 
-We performed 30 runs on each instance and then recorded the best results for each pheromone model in Table \ref{myTable2}. Note that because of the limited time we had to remove the inclusion of our VLNS algorithm for the instances with 400, 500 and 700 nodes as the runtime would have become too long in these cases.
-Pheromone model 1 seems to lead to the best performances. While the other 2 models yield results that are slightly worse when compared with model 1. We assume this has to do with the fact that models 2 and 3 are a bit too complex for this problem and can irritate good solution paths during the search. These effect can also be seen in the increased running time of model 2 and 3.
+We performed 30 runs on each instance and then recorded the best results for each pheromone model in Table \ref{myTable2}. Note that because of the limited time we had to reduce the number of ants and timesteps from 500/100 to a value of 200/50 for the instances with 400, 500 and 700 nodes as the runtime would have become too long in those cases. Pheromone model 1 seems to lead to the best performances. While the other 2 models yield results that are slightly worse when compared with model 1. We assume this has to do with the fact that models 2 and 3 are a bit too complex for this problem and can irritate good solution paths during the search. These effect can also be seen in the increased running time of model 2 and 3.
 When compared to the results of the first exercise in Table \ref{myTable1} the ACO algorithms clearly outperform the Greedy Heuristic. Although the performance of VLNS is a bit better the ACO 1 algorithm can also compete with its results.
 
 
